@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { useLocalStorage } from "@/hooks/use-local-storage";
@@ -19,7 +19,7 @@ export default function ExerciseTracker() {
   const [duration, setDuration] = useState("");
   const [notes, setNotes] = useState("");
 
-  const addWorkout = (e: React.FormEvent) => {
+  const addWorkout = (e: FormEvent) => {
     e.preventDefault();
     if (!duration) return;
     const newWorkout: Workout = { id: Date.now().toString(), type, duration, notes };

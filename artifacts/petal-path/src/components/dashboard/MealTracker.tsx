@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { useLocalStorage } from "@/hooks/use-local-storage";
@@ -18,7 +18,7 @@ export default function MealTracker() {
 
   const [inputs, setInputs] = useState({ Breakfast: "", Lunch: "", Dinner: "", Snacks: "" });
 
-  const addItem = (category: keyof Meals, e?: React.FormEvent) => {
+  const addItem = (category: keyof Meals, e?: FormEvent) => {
     if (e) e.preventDefault();
     const text = inputs[category].trim();
     if (!text) return;

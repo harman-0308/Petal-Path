@@ -1,0 +1,156 @@
+IMPORTANT:
+Do NOT redesign or regenerate the existing dashboard UI.
+
+Only extend the current application while preserving:
+
+* layout
+* spacing
+* pastel aesthetic
+* typography
+* responsiveness
+* existing functionality
+
+DO NOT rewrite already working sections.
+
+Keep everything:
+
+* lightweight
+* modular
+* organized
+* smooth
+* visually clean
+
+━━━━━━━━━━━━━━━━━━━━━━
+ADD THESE FEATURES ONLY
+━━━━━━━━━━━━━━━━━━━━━━
+
+1. FINANCE TAB
+
+Create a separate Finance tab.
+
+Include:
+
+* total balance
+* money spent
+* remaining balance
+* weekly savings target
+* monthly savings target
+* expense summaries
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+2. EXPENSE TRACKER
+
+Features:
+
+* add/edit/delete expenses
+* categories
+* expense notes
+* transaction dates
+
+Categories:
+
+* food
+* shopping
+* transport
+* subscriptions
+* study
+* entertainment
+* savings
+* miscellaneous
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+3. SAVINGS TRACKER
+
+Include:
+
+* savings goals
+* progress bars
+* percentage completion
+* remaining amount to save
+
+Use:
+
+* clean pastel charts
+* minimal analytics
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+4. FINANCIAL NOTES
+
+Add:
+
+* budgeting notes
+* saving reminders
+* wishlist notes
+
+Use:
+
+* sticky-note style cards
+* auto-saving
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+5. LIGHTWEIGHT CUSTOMIZATION PANEL
+
+Allow:
+
+* pastel theme switching
+* accent color changes
+* font switching
+
+DO NOT create heavy customization systems.
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+6. SIMPLE GAMIFICATION
+
+Add:
+
+* streak badges
+* XP counter
+* milestone achievements
+
+Keep it:
+
+* minimal
+* elegant
+* lightweight
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+7. FINAL UI POLISH
+
+Improve:
+
+* consistency
+* spacing
+* responsiveness
+* chart styling
+* card alignment
+
+Keep the dashboard:
+
+* breathable
+* premium
+* cohesive
+* non-cluttered
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+IMPORTANT:
+DO NOT:
+
+* regenerate the full dashboard
+* duplicate components
+* create heavy animations
+* create lag
+* break responsiveness
+
+The application should remain:
+
+* smooth
+* organized
+* aesthetically balanced
+* lightweight

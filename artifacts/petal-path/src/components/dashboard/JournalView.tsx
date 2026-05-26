@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format, subDays } from "date-fns";
 import { useLocalStorage } from "@/hooks/use-local-storage";
@@ -133,7 +133,7 @@ export default function JournalView() {
   };
 
   // Calculate Streak
-  const gratitudeStreak = React.useMemo(() => {
+  const gratitudeStreak = useMemo(() => {
     let streak = 0;
     let d = new Date();
     while (true) {

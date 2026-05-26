@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -18,7 +18,7 @@ export default function TodoList() {
   const [priority, setPriority] = useState<Priority>("Medium");
   const [filter, setFilter] = useState<"All" | "Active" | "Done">("All");
 
-  const addTask = (e: React.FormEvent) => {
+  const addTask = (e: FormEvent) => {
     e.preventDefault();
     if (!newTask.trim()) return;
     setTasks([...tasks, { id: Date.now().toString(), text: newTask, done: false, priority }]);

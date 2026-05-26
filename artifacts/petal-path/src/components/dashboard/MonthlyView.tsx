@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths } from "date-fns";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -25,7 +25,7 @@ export default function MonthlyView() {
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
 
-  const addGoal = (e: React.FormEvent) => {
+  const addGoal = (e: FormEvent) => {
     e.preventDefault();
     if (!newGoal.trim()) return;
     setGoals([...goals, { id: Date.now().toString(), text: newGoal, progress: 0 }]);

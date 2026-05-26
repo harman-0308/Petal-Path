@@ -21,6 +21,9 @@ import SelfCareChecklist from "../components/dashboard/SelfCareChecklist";
 import LittleThings from "../components/dashboard/LittleThings";
 import WeatherWidget from "../components/dashboard/WeatherWidget";
 import LofiPlayer from "../components/dashboard/LofiPlayer";
+import ThemePanel from "../components/dashboard/ThemePanel";
+import GamificationBar from "../components/dashboard/GamificationBar";
+import FinanceView from "../components/dashboard/FinanceView";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("daily");
@@ -56,6 +59,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-background p-4 md:p-8 font-sans selection:bg-primary/20 overflow-x-hidden">
       <div className="max-w-[1400px] mx-auto space-y-8">
         
+        <ThemePanel />
         {/* Header */}
         <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pb-6 border-b border-border/40">
           <div>
@@ -80,6 +84,7 @@ export default function Dashboard() {
               { id: "wellness", label: "Wellness" },
               { id: "focus", label: "Focus" },
               { id: "journal", label: "Journal" },
+              { id: "finance", label: "Finance" },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -96,6 +101,8 @@ export default function Dashboard() {
             ))}
           </div>
         </header>
+
+        <GamificationBar />
 
         {/* Content Area */}
         <AnimatePresence mode="wait">
@@ -184,6 +191,12 @@ export default function Dashboard() {
           {activeTab === "journal" && (
             <motion.div key="journal" variants={containerVariants} initial="hidden" animate="show" exit="exit">
               <JournalView />
+            </motion.div>
+          )}
+
+          {activeTab === "finance" && (
+            <motion.div key="finance" variants={containerVariants} initial="hidden" animate="show" exit="exit">
+              <FinanceView />
             </motion.div>
           )}
         </AnimatePresence>

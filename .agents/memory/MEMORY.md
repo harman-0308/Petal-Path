@@ -1,0 +1,1 @@
+- [Petal Path React imports](petal-path-react-imports.md) — Vite auto-JSX: never `import React` in dashboard components; use named hooks only or runtime breaks silently.
