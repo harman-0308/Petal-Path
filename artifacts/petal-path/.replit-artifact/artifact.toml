@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Petal Path"
+version = "1.0.0"
+id = "artifacts/petal-path"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25324
+
+[services.development]
+run = "pnpm --filter @workspace/petal-path run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/petal-path", "run", "build" ]
+publicDir = "artifacts/petal-path/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25324"
+BASE_PATH = "/"

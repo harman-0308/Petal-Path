@@ -1,0 +1,327 @@
+Build a FULLY FUNCTIONAL modern web application called:
+
+# “Petal Path”
+
+This is a personal productivity, self-care, wellness, habit tracking, journaling, and life management dashboard for personal use.
+
+IMPORTANT:
+This is NOT a static design or UI mockup.
+
+Build:
+
+* a REAL working application
+* fully responsive
+* fully editable
+* fully interactive
+* persistent
+* production-quality
+* modular and scalable
+
+━━━━━━━━━━━━━━━━━━━━━━
+TECH STACK
+━━━━━━━━━━━━━━━━━━━━━━
+
+Use:
+
+* Next.js
+* React
+* Tailwind CSS
+* Framer Motion
+
+Optional:
+
+* ShadCN UI
+* Zustand
+* Recharts
+
+━━━━━━━━━━━━━━━━━━━━━━
+DATABASE & PERSISTENCE
+━━━━━━━━━━━━━━━━━━━━━━
+
+Use lightweight persistent storage.
+
+Preferred:
+
+* IndexedDB
+  OR
+* localStorage
+  OR
+* Supabase if needed
+
+IMPORTANT:
+All user data must persist after refresh and reopening.
+
+━━━━━━━━━━━━━━━━━━━━━━
+MAIN APP CONCEPT
+━━━━━━━━━━━━━━━━━━━━━━
+
+The MOST IMPORTANT RULE:
+
+Everything important should remain visible on ONE main dashboard page.
+
+Only allow:
+
+* Weekly tab
+* Monthly tab
+* Finance tab (implement later)
+
+The layout may be information-dense intentionally.
+
+Do NOT create unnecessary pages.
+
+━━━━━━━━━━━━━━━━━━━━━━
+DESIGN STYLE
+━━━━━━━━━━━━━━━━━━━━━━
+
+Create a premium kawaii aesthetic using:
+
+* pastel colors
+* rounded corners
+* floating cards
+* soft shadows
+* subtle gradients
+* clean spacing
+* cozy typography
+* elegant animations
+
+Main colors:
+
+* pastel pink
+* lavender
+* mint green
+* butter yellow
+* pastel blue
+* peach cream
+* warm white
+
+The UI should feel:
+
+* cozy
+* dreamy
+* premium
+* calming
+* elegant
+* modern
+
+IMPORTANT:
+Keep the aesthetic:
+
+* clean
+* organized
+* breathable
+* minimal
+
+NOT cluttered or childish.
+
+━━━━━━━━━━━━━━━━━━━━━━
+TYPOGRAPHY
+━━━━━━━━━━━━━━━━━━━━━━
+
+Use:
+
+* Poppins
+* Nunito
+* Quicksand
+* Outfit
+
+━━━━━━━━━━━━━━━━━━━━━━
+RESPONSIVE DASHBOARD LAYOUT
+━━━━━━━━━━━━━━━━━━━━━━
+
+Create a modular dashboard layout.
+
+TOP SECTION:
+
+* greeting
+* current date/time
+* aesthetic dashboard header
+
+CENTER SECTION:
+
+* daily planner
+* to-do list
+* habit tracker
+* goals section
+
+SIDE CARDS:
+
+* water tracker
+* sleep tracker
+* meal tracker
+* exercise tracker
+
+BOTTOM SECTION:
+
+* notes
+* affirmations
+* analytics
+
+Use:
+
+* responsive grid layouts
+* modular reusable cards
+* collapsible widgets if needed
+
+━━━━━━━━━━━━━━━━━━━━━━
+IMPLEMENT THESE FEATURES
+━━━━━━━━━━━━━━━━━━━━━━
+
+1. DAILY PLANNER
+
+* hourly timeline
+* editable schedule blocks
+* notes beside time slots
+* add/remove entries
+* completion checkboxes
+* persistent saving
+
+Everything starts blank.
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+2. TO-DO LIST
+
+* add/edit/delete tasks
+* animated checkboxes
+* priorities
+* optional due dates
+* progress tracking
+* filtering
+* persistent saving
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+3. HABIT TRACKER
+
+* daily habits
+* weekly habits
+* monthly habits
+
+Features:
+
+* add/edit/delete habits
+* streak tracking
+* progress bars
+* completion percentages
+* heatmap visualization
+* habit history
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+4. GOALS SYSTEM
+
+* short-term goals
+* long-term goals
+* progress bars
+* milestones
+* deadlines
+* editable goal cards
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+5. WATER TRACKER
+
+* hydration goal
+* interactive water icons
+* increment/decrement tracking
+* animated progress
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+6. SLEEP TRACKER
+
+* sleep time
+* wake time
+* duration calculation
+* sleep quality
+* sleep history
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+7. EXERCISE TRACKER
+
+* workout logging
+* categories
+* duration tracking
+* notes
+* progress charts
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+8. MEAL TRACKER
+
+* breakfast
+* lunch
+* dinner
+* snacks
+* editable entries
+* nutrition notes
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+9. AFFIRMATIONS
+
+* rotating affirmations
+* editable affirmations
+* aesthetic cards
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+10. NOTES SYSTEM
+
+* editable notes
+* sticky-note cards
+* auto-save
+* add/delete notes
+
+━━━━━━━━━━━━━━━━━━━━━━
+ANIMATIONS
+━━━━━━━━━━━━━━━━━━━━━━
+
+Add:
+
+* smooth hover animations
+* subtle floating effects
+* card lift interactions
+* smooth transitions
+* animated progress bars
+
+Keep animations:
+
+* lightweight
+* smooth
+* non-laggy
+
+━━━━━━━━━━━━━━━━━━━━━━
+IMPORTANT RULES
+━━━━━━━━━━━━━━━━━━━━━━
+
+DO NOT:
+
+* add fake demo data
+* add lorem ipsum
+* add fake schedules
+* create cluttered layouts
+* break responsiveness
+* overload the UI
+
+The app should start BLANK but FULLY FUNCTIONAL.
+
+━━━━━━━━━━━━━━━━━━━━━━
+FINAL EXPECTATION
+━━━━━━━━━━━━━━━━━━━━━━
+
+The final result should feel like:
+
+* a luxury kawaii productivity dashboard
+* a cozy self-care planner
+* a premium life management app
+
+It must look:
+
+* polished
+* organized
+* elegant
+* premium
+* aesthetically balanced
+* emotionally comforting
