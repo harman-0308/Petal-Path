@@ -12,6 +12,15 @@ import Affirmations from "../components/dashboard/Affirmations";
 import Notes from "../components/dashboard/Notes";
 import WeeklyView from "../components/dashboard/WeeklyView";
 import MonthlyView from "../components/dashboard/MonthlyView";
+import WellnessView from "../components/dashboard/WellnessView";
+import FocusView from "../components/dashboard/FocusView";
+import JournalView from "../components/dashboard/JournalView";
+import MoodTracker from "../components/dashboard/MoodTracker";
+import EnergyTracker from "../components/dashboard/EnergyTracker";
+import SelfCareChecklist from "../components/dashboard/SelfCareChecklist";
+import LittleThings from "../components/dashboard/LittleThings";
+import WeatherWidget from "../components/dashboard/WeatherWidget";
+import LofiPlayer from "../components/dashboard/LofiPlayer";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("daily");
@@ -54,27 +63,35 @@ export default function Dashboard() {
               <span className="text-primary text-xl">✿</span>
               <span className="font-bold text-muted-foreground tracking-wider uppercase text-xs">Petal Path</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
               {getGreeting()} <span className="text-primary/70">~</span>
+              <WeatherWidget />
             </h1>
             <p className="text-muted-foreground mt-2 font-medium">
               {format(time, "EEEE, MMMM do")} • {format(time, "h:mm a")}
             </p>
           </div>
 
-          <div className="flex bg-card p-1 rounded-full border border-border/50 shadow-sm shadow-primary/5">
-            {["daily", "weekly", "monthly"].map(tab => (
+          <div className="flex bg-card p-1 rounded-full border border-border/50 shadow-sm shadow-primary/5 overflow-x-auto no-scrollbar">
+            {[
+              { id: "daily", label: "Daily" },
+              { id: "weekly", label: "Weekly" },
+              { id: "monthly", label: "Monthly" },
+              { id: "wellness", label: "Wellness" },
+              { id: "focus", label: "Focus" },
+              { id: "journal", label: "Journal" },
+            ].map(tab => (
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 capitalize tracking-wide ${
-                  activeTab === tab 
-                  ? "bg-primary text-primary-foreground shadow-sm" 
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap tracking-wide ${
+                  activeTab === tab.id
+                  ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 }`}
-                data-testid={`tab-${tab}`}
+                data-testid={`tab-${tab.id}`}
               >
-                {tab}
+                {tab.label}
               </button>
             ))}
           </div>
@@ -110,6 +127,18 @@ export default function Dashboard() {
               {/* Right Column (Narrower) */}
               <div className="lg:col-span-4 space-y-6">
                 <motion.div variants={itemVariants}>
+                  <MoodTracker />
+                </motion.div>
+                <motion.div variants={itemVariants}>
+                  <EnergyTracker />
+                </motion.div>
+                <motion.div variants={itemVariants}>
+                  <SelfCareChecklist />
+                </motion.div>
+                <motion.div variants={itemVariants}>
+                  <LittleThings />
+                </motion.div>
+                <motion.div variants={itemVariants}>
                   <Affirmations />
                 </motion.div>
                 <motion.div variants={itemVariants}>
@@ -129,18 +158,37 @@ export default function Dashboard() {
           )}
 
           {activeTab === "weekly" && (
-            <motion.div key="weekly" exit="exit">
+            <motion.div key="weekly" variants={containerVariants} initial="hidden" animate="show" exit="exit">
               <WeeklyView />
             </motion.div>
           )}
 
           {activeTab === "monthly" && (
-            <motion.div key="monthly" exit="exit">
+            <motion.div key="monthly" variants={containerVariants} initial="hidden" animate="show" exit="exit">
               <MonthlyView />
+            </motion.div>
+          )}
+
+          {activeTab === "wellness" && (
+            <motion.div key="wellness" variants={containerVariants} initial="hidden" animate="show" exit="exit">
+              <WellnessView />
+            </motion.div>
+          )}
+
+          {activeTab === "focus" && (
+            <motion.div key="focus" variants={containerVariants} initial="hidden" animate="show" exit="exit">
+              <FocusView />
+            </motion.div>
+          )}
+
+          {activeTab === "journal" && (
+            <motion.div key="journal" variants={containerVariants} initial="hidden" animate="show" exit="exit">
+              <JournalView />
             </motion.div>
           )}
         </AnimatePresence>
 
+        <LofiPlayer />
       </div>
     </div>
   );

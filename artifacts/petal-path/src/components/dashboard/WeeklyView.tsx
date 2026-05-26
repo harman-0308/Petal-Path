@@ -1,4 +1,3 @@
-import React from "react";
 import { format, startOfWeek, addDays, isSameDay } from "date-fns";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { useLocalStorage } from "@/hooks/use-local-storage";

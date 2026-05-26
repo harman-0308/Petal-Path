@@ -1,0 +1,356 @@
+IMPORTANT:
+Do NOT redesign, regenerate, or break the existing dashboard UI.
+
+Preserve:
+
+* the current layout
+* the existing pastel kawaii aesthetic
+* typography
+* spacing
+* responsiveness
+* card structure
+* animations
+* dashboard hierarchy
+
+Integrate the following features CLEANLY into the existing “Petal Path” application.
+
+The interface must remain:
+
+* organized
+* breathable
+* elegant
+* premium
+* visually balanced
+* cohesive
+
+DO NOT create visual clutter.
+
+━━━━━━━━━━━━━━━━━━━━━━
+IMPLEMENT WELLNESS & PRODUCTIVITY EXPANSION
+━━━━━━━━━━━━━━━━━━━━━━
+
+All features must be:
+
+* fully functional
+* editable
+* dynamic
+* persistent
+* responsive
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+1. MOOD TRACKER
+   ━━━━━━━━━━━━━━━━━━━━━━
+
+Create a premium mood tracking system.
+
+Features:
+
+* emoji mood selection
+* mood intensity scale
+* mood notes
+* mood history
+* mood calendar
+* mood analytics
+* mood-to-productivity comparison
+
+Example moods:
+😊 🌸 😌 😴 💖 😭 😡 ☁️ ✨
+
+Use:
+
+* pastel gradients
+* rounded cards
+* glowing active states
+* elegant transitions
+
+━━━━━━━━━━━━━━━━━━━━━━
+2. PERIOD TRACKER
+━━━━━━━━━━━━━━━━━━━━━━
+
+Implement:
+
+* cycle calendar
+* period start/end tracking
+* symptom tracking
+* mood tracking
+* notes section
+* prediction system
+
+The UI should feel:
+
+* feminine
+* soft
+* elegant
+* calming
+
+━━━━━━━━━━━━━━━━━━━━━━
+3. STUDY & FOCUS SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━
+
+Create a premium study productivity section.
+
+Include:
+
+* Pomodoro timer
+* focus timer
+* study session logging
+* subject tracking
+* deep work tracking
+* session history
+* study analytics
+* productivity scoring
+* daily study hours
+
+The timer should:
+
+* remain compact
+* aesthetically match the dashboard
+* include smooth animations
+
+━━━━━━━━━━━━━━━━━━━━━━
+4. ENERGY & WELLNESS TRACKER
+━━━━━━━━━━━━━━━━━━━━━━
+
+Track:
+
+* energy level
+* motivation level
+* stress level
+* social battery
+
+Use:
+
+* sliders
+* radial indicators
+* animated wellness meters
+* soft pastel visuals
+
+━━━━━━━━━━━━━━━━━━━━━━
+5. TODAY’S HIGHLIGHTS SECTION
+━━━━━━━━━━━━━━━━━━━━━━
+
+Create a cozy reflection section.
+
+Include:
+
+* today’s intention
+* biggest win today
+* what made me happy
+* main focus today
+* highlight of the day
+
+Use:
+
+* sticky-note style cards
+* subtle pastel accents
+* cozy typography
+
+━━━━━━━━━━━━━━━━━━━━━━
+6. DIGITAL JOURNAL SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━
+
+Create a journaling section.
+
+Include:
+
+* daily journal entries
+* emotional reflections
+* gratitude journaling
+* optional photo attachment support
+* journal history
+* rich text support if possible
+
+The journal should feel:
+
+* calming
+* intimate
+* elegant
+* emotionally comforting
+
+━━━━━━━━━━━━━━━━━━━━━━
+7. GRATITUDE TRACKER
+━━━━━━━━━━━━━━━━━━━━━━
+
+Implement:
+
+* gratitude entries
+* gratitude prompts
+* positivity tracking
+* gratitude streaks
+
+Use:
+
+* tiny pastel cards
+* glowing borders
+* minimal elegant styling
+
+━━━━━━━━━━━━━━━━━━━━━━
+8. SELF-CARE CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━
+
+Create customizable self-care routines.
+
+Examples:
+
+* skincare
+* vitamins
+* stretching
+* meditation
+* journaling
+* hydration
+
+Features:
+
+* editable checklist
+* recurring routines
+* completion tracking
+
+━━━━━━━━━━━━━━━━━━━━━━
+9. LITTLE THINGS TRACKER
+━━━━━━━━━━━━━━━━━━━━━━
+
+Create a wholesome micro-moments tracker.
+
+Examples:
+
+* drank coffee ☕
+* listened to music 🎧
+* went outside 🌤️
+* talked to friends 💬
+* watched sunset 🌅
+
+The feature should feel:
+
+* emotionally warm
+* lightweight
+* comforting
+
+━━━━━━━━━━━━━━━━━━━━━━
+10. WEATHER & AMBIENCE
+━━━━━━━━━━━━━━━━━━━━━━
+
+Add:
+
+* weather widget
+* dynamic greetings
+* subtle ambience
+* day/night transitions
+* soft animated clouds/stars/rain
+
+IMPORTANT:
+Effects must remain lightweight and non-laggy.
+
+━━━━━━━━━━━━━━━━━━━━━━
+11. LOFI / AMBIENT MUSIC PANEL
+━━━━━━━━━━━━━━━━━━━━━━
+
+Create a compact music widget.
+
+Include:
+
+* lofi music
+* rain sounds
+* café ambience
+* white noise
+
+The player should:
+
+* stay compact
+* remain aesthetically integrated
+* not dominate the UI
+
+━━━━━━━━━━━━━━━━━━━━━━
+12. WEEKLY & MONTHLY RESET SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━
+
+Create reset/reflection sections.
+
+Include:
+
+* weekly wins
+* lessons learned
+* next goals
+* emotional check-in
+* monthly reflection
+* declutter checklist
+
+━━━━━━━━━━━━━━━━━━━━━━
+13. ADVANCED ANALYTICS
+━━━━━━━━━━━━━━━━━━━━━━
+
+Expand analytics to include:
+
+* mood analytics
+* wellness analytics
+* study analytics
+* productivity scores
+* emotional trends
+* gratitude streaks
+* focus tracking
+
+Use:
+
+* pastel charts
+* rounded visualizations
+* elegant statistics cards
+
+━━━━━━━━━━━━━━━━━━━━━━
+ANIMATION & PERFORMANCE RULES
+━━━━━━━━━━━━━━━━━━━━━━
+
+Add:
+
+* smooth transitions
+* hover lift effects
+* floating interactions
+* subtle glow effects
+* fade animations
+
+IMPORTANT:
+DO NOT:
+
+* create lag
+* overload the dashboard
+* break responsiveness
+* create inconsistent card sizes
+* create visual chaos
+
+━━━━━━━━━━━━━━━━━━━━━━
+IMPORTANT
+━━━━━━━━━━━━━━━━━━━━━━
+
+Maintain:
+
+* modular architecture
+* spacing consistency
+* typography consistency
+* visual consistency
+* responsive behavior
+
+The dashboard must still feel:
+
+* breathable
+* polished
+* premium
+* cozy
+* emotionally comforting
+
+━━━━━━━━━━━━━━━━━━━━━━
+FINAL EXPECTATION
+━━━━━━━━━━━━━━━━━━━━━━
+
+The application should now feel like:
+
+* a premium wellness ecosystem
+* a luxury self-care dashboard
+* a cozy productivity operating system
+* a beautiful digital life planner
+
+It must remain:
+
+* clean
+* organized
+* cohesive
+* highly aesthetic
+* highly functional
