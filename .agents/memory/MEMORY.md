@@ -1,1 +1,3 @@
 - [Petal Path React imports](petal-path-react-imports.md) — Vite auto-JSX: never `import React` in dashboard components; use named hooks only or runtime breaks silently.
+- [Petal Path localStorage keys](petal-path-localstorage-keys.md) — canonical key→component→shape map; wrong keys silently break XP/streaks (GamificationBar was using petal-todo/petal-water-logs instead of petal-todos/petal-water)
+- [Petal Path hook count rule](petal-path-hook-count.md) — useLocalStorage uses useState+useCallback; any change to hook count (adding/removing hooks) causes HMR "Rendered more hooks" error — requires workflow restart

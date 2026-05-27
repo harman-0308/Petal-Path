@@ -1,25 +1,26 @@
 import { useState, FormEvent } from "react";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths } from "date-fns";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths } from "date-fns";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Target } from "lucide-react";
+import { ChevronLeft, ChevronRight, Target, Trash2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
+
+type Goal = { id: string; text: string; progress: number };
 
 export default function MonthlyView() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [habitLogs] = useLocalStorage<Record<string, string[]>>("petal-habit-logs", {});
-  const [goals, setGoals] = useLocalStorage<any[]>("petal-goals", []);
-  
+  const [goals, setGoals] = useLocalStorage<Goal[]>("petal-goals", []);
+
   const [newGoal, setNewGoal] = useState("");
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
   const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
-  
-  // Pad beginning of month
-  const startingDayOfWeek = monthStart.getDay(); // 0 is Sunday
+
+  const startingDayOfWeek = monthStart.getDay();
   const paddingDays = Array.from({ length: startingDayOfWeek === 0 ? 6 : startingDayOfWeek - 1 }).map(() => null);
 
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
@@ -28,19 +29,23 @@ export default function MonthlyView() {
   const addGoal = (e: FormEvent) => {
     e.preventDefault();
     if (!newGoal.trim()) return;
-    setGoals([...goals, { id: Date.now().toString(), text: newGoal, progress: 0 }]);
+    setGoals(prev => [...prev, { id: Date.now().toString(), text: newGoal.trim(), progress: 0 }]);
     setNewGoal("");
   };
 
   const updateGoalProgress = (id: string, progress: number) => {
-    setGoals(goals.map(g => g.id === id ? { ...g, progress } : g));
+    setGoals(prev => prev.map(g => g.id === id ? { ...g, progress } : g));
+  };
+
+  const deleteGoal = (id: string) => {
+    setGoals(prev => prev.filter(g => g.id !== id));
   };
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         {/* Calendar */}
         <Card className="bg-card lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -64,34 +69,48 @@ export default function MonthlyView() {
             </div>
             <div className="grid grid-cols-7 gap-1 lg:gap-2">
               {paddingDays.map((_, i) => (
-                <div key={`pad-${i}`} className="h-16 lg:h-24 rounded-xl bg-transparent"></div>
+                <div key={`pad-${i}`} className="h-16 lg:h-24 rounded-xl bg-transparent" />
               ))}
               {daysInMonth.map(day => {
                 const dateStr = format(day, "yyyy-MM-dd");
                 const logsCount = (habitLogs[dateStr] || []).length;
                 const isToday = isSameDay(day, new Date());
-                
+
                 return (
-                  <div 
-                    key={day.toISOString()} 
+                  <div
+                    key={day.toISOString()}
                     className={`h-16 lg:h-24 rounded-xl border border-border/40 p-1 flex flex-col items-center hover:bg-muted/30 transition-colors ${
                       isToday ? 'bg-primary/5 border-primary/30 ring-1 ring-primary/20' : 'bg-card'
                     }`}
                   >
-                    <span className={`text-sm font-medium ${isToday ? 'text-primary' : 'text-foreground/80'}`}>
+                    <span className={`text-sm font-medium ${isToday ? 'text-primary font-bold' : 'text-foreground/80'}`}>
                       {format(day, 'd')}
                     </span>
-                    <div className="mt-auto flex flex-wrap gap-1 justify-center p-1">
+                    <div className="mt-auto flex flex-wrap gap-0.5 justify-center p-1">
                       {logsCount > 0 && (
                         <div className="w-1.5 h-1.5 rounded-full bg-primary" title={`${logsCount} habits`} />
                       )}
                       {logsCount > 3 && (
                         <div className="w-1.5 h-1.5 rounded-full bg-secondary" />
                       )}
+                      {logsCount > 6 && (
+                        <div className="w-1.5 h-1.5 rounded-full bg-accent" />
+                      )}
                     </div>
                   </div>
                 );
               })}
+            </div>
+            {/* Legend */}
+            <div className="mt-4 flex gap-4 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1.5">
+                <div className="w-2 h-2 rounded-full bg-primary" />
+                <span>Habits logged</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-2 h-2 rounded-full bg-primary/30 ring-1 ring-primary/40" />
+                <span>Today</span>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -105,39 +124,56 @@ export default function MonthlyView() {
           </CardHeader>
           <CardContent className="space-y-6">
             <form onSubmit={addGoal} className="flex gap-2">
-              <Input 
-                value={newGoal} 
-                onChange={e => setNewGoal(e.target.value)} 
-                placeholder="New goal..." 
+              <Input
+                value={newGoal}
+                onChange={e => setNewGoal(e.target.value)}
+                placeholder="Add a goal..."
                 className="text-sm"
               />
-              <Button type="submit" className="bg-primary text-white">Add</Button>
+              <Button type="submit" size="sm" className="bg-primary text-white shrink-0">
+                Add
+              </Button>
             </form>
 
-            <div className="space-y-4">
+            <div className="space-y-5 max-h-[500px] overflow-y-auto pretty-scroll pr-1">
+              {goals.length === 0 && (
+                <p className="text-center text-sm text-muted-foreground italic py-6">
+                  🌟 What do you want to achieve this month?
+                </p>
+              )}
               {goals.map(goal => (
-                <div key={goal.id} className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="font-medium text-foreground">{goal.text}</span>
-                    <span className="text-muted-foreground">{goal.progress}%</span>
+                <div key={goal.id} className="space-y-2 group">
+                  <div className="flex justify-between items-start gap-2">
+                    <span className="font-medium text-sm text-foreground leading-snug flex-1">{goal.text}</span>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <span className="text-xs text-muted-foreground font-bold w-8 text-right">{goal.progress}%</span>
+                      <button
+                        onClick={() => deleteGoal(goal.id)}
+                        className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all"
+                        title="Delete goal"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                   </div>
                   <Progress value={goal.progress} className="h-2" />
-                  <div className="flex gap-1 justify-end">
+                  <div className="flex gap-1">
                     {[0, 25, 50, 75, 100].map(val => (
-                      <button 
+                      <button
                         key={val}
                         onClick={() => updateGoalProgress(goal.id, val)}
-                        className={`text-[10px] px-1.5 py-0.5 rounded ${goal.progress === val ? 'bg-primary text-white' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}
+                        className={`text-[10px] px-2 py-0.5 rounded-full flex-1 transition-colors font-medium ${
+                          goal.progress === val
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                        }`}
                       >
-                        {val}
+                        {val === 100 ? '✓' : `${val}%`}
                       </button>
                     ))}
                   </div>
                 </div>
               ))}
-              {goals.length === 0 && (
-                <p className="text-center text-sm text-muted-foreground italic py-4">What do you want to achieve this month?</p>
-              )}
             </div>
           </CardContent>
         </Card>

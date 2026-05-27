@@ -60,7 +60,7 @@ export default function SleepTracker() {
             <p className="text-xs text-muted-foreground mt-2">
               {currentLog.sleepTime} - {currentLog.wakeTime}
             </p>
-            <Button variant="ghost" size="sm" onClick={() => setLogs({ ...logs, [today]: undefined as any })} className="text-xs h-6 mt-2">
+            <Button variant="ghost" size="sm" onClick={() => { const next = { ...logs }; delete next[today]; setLogs(next); }} className="text-xs h-6 mt-2">
               Edit
             </Button>
           </div>

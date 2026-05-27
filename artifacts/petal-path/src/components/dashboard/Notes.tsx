@@ -40,7 +40,7 @@ export default function Notes() {
         </Button>
       </div>
 
-      <div className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
+      <div className="columns-1 md:columns-2 lg:columns-3 gap-4">
         <AnimatePresence>
           {notes.map((note) => (
             <motion.div
@@ -49,7 +49,7 @@ export default function Notes() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className={`${note.color} p-4 rounded-xl shadow-sm break-inside-avoid relative group transition-shadow hover:shadow-md border border-border/10`}
+              className={`${note.color} p-4 rounded-xl shadow-sm break-inside-avoid relative group transition-shadow hover:shadow-md border border-border/10 mb-4`}
             >
               <Input
                 value={note.title}

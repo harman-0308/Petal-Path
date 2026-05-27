@@ -51,7 +51,7 @@ export default function MoodTracker() {
             <div className="text-4xl">{currentLog.emoji}</div>
             <div className="text-sm font-medium text-foreground">Intensity: {currentLog.intensity}/10</div>
             {currentLog.note && <p className="text-xs text-muted-foreground mt-2 italic">"{currentLog.note}"</p>}
-            <Button variant="ghost" size="sm" onClick={() => setLogs({ ...logs, [today]: undefined as any })} className="text-xs h-6 mt-2 hover:bg-primary/10 hover:text-primary transition-colors">
+            <Button variant="ghost" size="sm" onClick={() => { const next = { ...logs }; delete next[today]; setLogs(next); }} className="text-xs h-6 mt-2 hover:bg-primary/10 hover:text-primary transition-colors">
               Edit
             </Button>
           </div>

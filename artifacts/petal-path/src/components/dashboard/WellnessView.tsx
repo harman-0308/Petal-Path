@@ -27,7 +27,7 @@ export default function WellnessView() {
   const [moodLogs] = useLocalStorage<Record<string, { mood: string; intensity: number; note: string }>>("petal-mood", {});
   const [energyLogs] = useLocalStorage<Record<string, { energy: number; motivation: number; stress: number; social: number }>>("petal-energy", {});
   const [sleepLogs] = useLocalStorage<Record<string, { sleepTime: string; wakeTime: string; quality: number; duration: string }>>("petal-sleep", {});
-  const [gratitudeLogs] = useLocalStorage<Record<string, string[]>>("petal-gratitude", {});
+  const [gratitudeLogs] = useLocalStorage<Record<string, { id: string; text: string }[]>>("petal-gratitude", {});
 
   const selectedDateStr = format(selectedDate, "yyyy-MM-dd");
   const currentLog = logs[selectedDateStr] || { symptoms: [], notes: "" };

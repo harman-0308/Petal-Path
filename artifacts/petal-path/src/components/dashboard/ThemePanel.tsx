@@ -51,7 +51,7 @@ export default function ThemePanel() {
   }, [accent, font, bg]);
 
   return (
-    <div className="fixed top-20 right-6 z-40 relative">
+    <div className="relative inline-block">
       <Button 
         variant="outline" 
         size="icon" 
