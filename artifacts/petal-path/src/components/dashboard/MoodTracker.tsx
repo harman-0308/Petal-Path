@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { format } from "date-fns";
+import { format, subDays } from "date-fns";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -34,6 +34,12 @@ export default function MoodTracker() {
     setLogs({ ...logs, [today]: { emoji: selectedMood, intensity: intensity[0], note } });
   };
 
+  const last7 = Array.from({ length: 7 }, (_, i) => {
+    const d = subDays(new Date(), 6 - i);
+    const key = format(d, "yyyy-MM-dd");
+    return { key, day: format(d, "EEE"), log: logs[key] };
+  });
+
   return (
     <Card className="bg-card hover-elevate">
       <CardHeader className="pb-3">
@@ -45,7 +51,7 @@ export default function MoodTracker() {
             <div className="text-4xl">{currentLog.emoji}</div>
             <div className="text-sm font-medium text-foreground">Intensity: {currentLog.intensity}/10</div>
             {currentLog.note && <p className="text-xs text-muted-foreground mt-2 italic">"{currentLog.note}"</p>}
-            <Button variant="ghost" size="sm" onClick={() => setLogs({ ...logs, [today]: undefined as any })} className="text-xs h-6 mt-2">
+            <Button variant="ghost" size="sm" onClick={() => setLogs({ ...logs, [today]: undefined as any })} className="text-xs h-6 mt-2 hover:bg-primary/10 hover:text-primary transition-colors">
               Edit
             </Button>
           </div>
@@ -56,40 +62,62 @@ export default function MoodTracker() {
                 <button
                   key={m.emoji}
                   onClick={() => setSelectedMood(m.emoji)}
-                  className={`text-2xl p-2 rounded-full transition-all ${selectedMood === m.emoji ? "bg-primary/20 scale-110" : "hover:bg-muted opacity-60 hover:opacity-100"}`}
+                  className={`text-2xl p-2 rounded-full transition-all duration-200 ${selectedMood === m.emoji ? "bg-primary/20 scale-110 shadow-sm" : "hover:bg-muted opacity-60 hover:opacity-100 hover:scale-105"}`}
                   title={m.label}
                 >
                   {m.emoji}
                 </button>
               ))}
             </div>
-            
+
             {selectedMood && (
-              <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
+              <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs text-muted-foreground">
                     <span>Low</span>
-                    <span>Intensity: {intensity[0]}</span>
+                    <span className="font-semibold text-foreground">Intensity: {intensity[0]}</span>
                     <span>High</span>
                   </div>
                   <Slider value={intensity} onValueChange={setIntensity} max={10} min={1} step={1} />
                 </div>
-                
-                <Textarea 
-                  placeholder="Why are you feeling this way? (Optional)" 
+
+                <Textarea
+                  placeholder="Why are you feeling this way? (Optional)"
                   value={note}
                   onChange={e => setNote(e.target.value)}
-                  className="text-sm resize-none"
+                  className="text-sm resize-none border-border/50 focus-visible:ring-primary/30"
                   rows={2}
                 />
-                
-                <Button onClick={handleSave} className="w-full bg-primary hover:bg-primary/90 text-white rounded-full">
+
+                <Button onClick={handleSave} className="w-full bg-primary hover:bg-primary/90 text-white rounded-full transition-all duration-200 hover:shadow-md">
                   Log Mood 🌸
                 </Button>
               </div>
             )}
           </div>
         )}
+
+        {/* 7-day history strip */}
+        <div className="pt-2 border-t border-border/30">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">This week</p>
+          <div className="flex justify-between">
+            {last7.map(({ key, day, log }) => (
+              <div key={key} className="flex flex-col items-center gap-1">
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-base transition-all ${
+                    key === today
+                      ? "ring-2 ring-primary ring-offset-1 ring-offset-card"
+                      : ""
+                  } ${log ? "bg-primary/10" : "bg-muted/40"}`}
+                  title={log ? `${log.emoji} ${log.intensity}/10` : "No entry"}
+                >
+                  {log ? log.emoji : <span className="text-muted-foreground/30 text-xs">·</span>}
+                </div>
+                <span className="text-[9px] text-muted-foreground font-medium">{day}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </CardContent>
     </Card>
   );

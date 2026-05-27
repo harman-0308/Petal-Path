@@ -1,72 +1,77 @@
 import { useEffect, useState } from "react";
-import { Cloud, Sun, CloudRain, CloudLightning, CloudSnow, Loader2 } from "lucide-react";
+
+type WeatherData = { temp: number; code: number };
+
+const getTimeIcon = (hour: number) => {
+  if (hour >= 5 && hour < 9) return "🌅";
+  if (hour >= 9 && hour < 17) return "☀️";
+  if (hour >= 17 && hour < 20) return "🌇";
+  if (hour >= 20 && hour < 22) return "🌆";
+  return "🌙";
+};
+
+const getWeatherEmoji = (code: number) => {
+  if (code === 0) return "☀️";
+  if (code <= 3) return "⛅";
+  if (code <= 48) return "🌫️";
+  if (code <= 67) return "🌧️";
+  if (code <= 77) return "❄️";
+  if (code <= 82) return "🌦️";
+  return "⛈️";
+};
 
 export default function WeatherWidget() {
-  const [weather, setWeather] = useState<{ temp: number; code: number } | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const hour = new Date().getHours();
+  const [weather, setWeather] = useState<WeatherData | null>(null);
 
   useEffect(() => {
-    if (!navigator.geolocation) {
-      setError(true);
-      setLoading(false);
-      return;
-    }
+    if (!navigator.geolocation) return;
+
+    const timer = setTimeout(() => {}, 0);
+    let cancelled = false;
+
+    const timeout = setTimeout(() => { cancelled = true; }, 4000);
 
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
+      async ({ coords }) => {
+        clearTimeout(timeout);
+        if (cancelled) return;
         try {
-          const { latitude, longitude } = position.coords;
-          const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weathercode`);
-          if (!res.ok) throw new Error("Failed to fetch");
+          const res = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${coords.latitude}&longitude=${coords.longitude}&current=temperature_2m,weathercode`
+          );
+          if (!res.ok) return;
           const data = await res.json();
-          setWeather({
-            temp: Math.round(data.current.temperature_2m),
-            code: data.current.weathercode
-          });
-        } catch (e) {
-          setError(true);
-        } finally {
-          setLoading(false);
+          if (!cancelled) {
+            setWeather({ temp: Math.round(data.current.temperature_2m), code: data.current.weathercode });
+          }
+        } catch {
+          // silent — fall back to time icon
         }
       },
-      () => {
-        setError(true);
-        setLoading(false);
-      }
+      () => clearTimeout(timeout),
+      { timeout: 4000, maximumAge: 600000 }
     );
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+      clearTimeout(timer);
+    };
   }, []);
 
-  const getWeatherIcon = (code: number) => {
-    if (code === 0) return <Sun className="h-4 w-4 text-yellow-500" />;
-    if (code >= 1 && code <= 3) return <Cloud className="h-4 w-4 text-gray-400" />;
-    if (code >= 51 && code <= 67) return <CloudRain className="h-4 w-4 text-blue-400" />;
-    if (code >= 71 && code <= 77) return <CloudSnow className="h-4 w-4 text-blue-200" />;
-    if (code >= 95) return <CloudLightning className="h-4 w-4 text-purple-400" />;
-    return <Cloud className="h-4 w-4 text-gray-400" />;
-  };
-
-  if (loading) {
+  if (weather) {
     return (
-      <div className="flex items-center gap-2 bg-card border border-border/50 px-3 py-1.5 rounded-full shadow-sm">
-        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
-
-  if (error || !weather) {
-    return (
-      <div className="flex items-center gap-2 bg-card border border-border/50 px-3 py-1.5 rounded-full shadow-sm text-xs text-muted-foreground">
-        <Cloud className="h-4 w-4" />
-        <span>Weather unavailable</span>
-      </div>
+      <span className="inline-flex items-center gap-1.5 text-sm font-medium bg-card border border-border/40 px-3 py-1 rounded-full shadow-sm text-foreground/80">
+        <span>{getWeatherEmoji(weather.code)}</span>
+        <span>{weather.temp}°</span>
+      </span>
     );
   }
 
   return (
-    <div className="flex items-center gap-2 bg-card border border-border/50 px-3 py-1.5 rounded-full shadow-sm font-medium text-sm">
-      {getWeatherIcon(weather.code)}
-      <span>{weather.temp}°C</span>
-    </div>
+    <span className="text-3xl md:text-4xl opacity-70 select-none" title="Today's vibe">
+      {getTimeIcon(hour)}
+    </span>
   );
 }
