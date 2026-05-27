@@ -5,7 +5,7 @@ import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,6 +27,17 @@ export default function HabitTracker() {
     setHabits([...habits, { id: Date.now().toString(), name: newHabitName, streak: 0, totalDays: 0 }]);
     setNewHabitName("");
     setIsDialogOpen(false);
+  };
+
+  const deleteHabit = (id: string) => {
+    setHabits(habits.filter(h => h.id !== id));
+    setDailyLogs(prev => {
+      const updated = { ...prev };
+      for (const date in updated) {
+        updated[date] = updated[date].filter(logId => logId !== id);
+      }
+      return updated;
+    });
   };
 
   const toggleHabit = (id: string) => {
@@ -98,7 +109,7 @@ export default function HabitTracker() {
           habits.map(habit => {
             const isDone = todayLogs.includes(habit.id);
             return (
-              <div key={habit.id} className="space-y-2">
+              <div key={habit.id} className="space-y-2 group">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <motion.button
@@ -121,8 +132,18 @@ export default function HabitTracker() {
                       {habit.name}
                     </span>
                   </div>
-                  <div className="text-xs font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full">
-                    {habit.streak} 🔥
+                  <div className="flex items-center gap-1">
+                    <div className="text-xs font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full">
+                      {habit.streak} 🔥
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => deleteHabit(habit.id)}
+                      className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
                   </div>
                 </div>
                 <Progress 

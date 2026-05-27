@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import DailyPlanner from "../components/dashboard/DailyPlanner";
@@ -19,7 +19,6 @@ import MoodTracker from "../components/dashboard/MoodTracker";
 import EnergyTracker from "../components/dashboard/EnergyTracker";
 import SelfCareChecklist from "../components/dashboard/SelfCareChecklist";
 import LittleThings from "../components/dashboard/LittleThings";
-import WeatherWidget from "../components/dashboard/WeatherWidget";
 import LofiPlayer from "../components/dashboard/LofiPlayer";
 import ThemePanel from "../components/dashboard/ThemePanel";
 import GamificationBar from "../components/dashboard/GamificationBar";
@@ -69,7 +68,6 @@ export default function Dashboard() {
             </div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
               {getGreeting()} <span className="text-primary/70">~</span>
-              <WeatherWidget />
             </h1>
             <p className="text-muted-foreground mt-2 font-medium">
               {format(time, "EEEE, MMMM do")} • {format(time, "h:mm a")}
