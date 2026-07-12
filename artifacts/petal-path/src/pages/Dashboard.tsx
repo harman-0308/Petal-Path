@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import DailyPlanner from "../components/dashboard/DailyPlanner";
@@ -25,16 +25,27 @@ import LofiPlayer from "../components/dashboard/LofiPlayer";
 import ThemePanel from "../components/dashboard/ThemePanel";
 import GamificationBar from "../components/dashboard/GamificationBar";
 import FinanceView from "../components/dashboard/FinanceView";
-import { 
-  Menu, 
-  X, 
-  Sun, 
-  CalendarRange, 
-  CalendarDays, 
-  Heart, 
-  BrainCircuit, 
-  PenLine, 
-  Wallet 
+import Login, { type UserProfile } from "../components/dashboard/Login";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import {
+  Sun,
+  CalendarRange,
+  CalendarDays,
+  Heart,
+  BrainCircuit,
+  PenLine,
+  Wallet,
+  LogOut,
+  User,
 } from "lucide-react";
 
 const TABS = [
@@ -49,20 +60,43 @@ const TABS = [
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("daily");
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [time, setTime] = useState(new Date());
+  const [user, setUser] = useLocalStorage<UserProfile | null>("petal-user", null);
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
+  const handleLoginSuccess = useCallback((profile: UserProfile) => {
+    setUser(profile);
+  }, [setUser]);
+
+  const handleSignOut = useCallback(() => {
+    setUser(null);
+    // Also revoke Google session if available
+    try {
+      // @ts-ignore
+      if (window.google?.accounts?.id) {
+        // @ts-ignore
+        window.google.accounts.id.disableAutoSelect();
+      }
+    } catch {/* ignore */}
+  }, [setUser]);
+
   const getGreeting = () => {
     const hour = time.getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
+    const firstName = user?.name?.split(" ")[0] ?? "";
+    const suffix = firstName ? `, ${firstName}` : "";
+    if (hour < 12) return `Good morning${suffix}`;
+    if (hour < 18) return `Good afternoon${suffix}`;
+    return `Good evening${suffix}`;
   };
+
+  // Show login screen if not authenticated
+  if (!user) {
+    return <Login onLoginSuccess={handleLoginSuccess} />;
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -233,6 +267,59 @@ export default function Dashboard() {
         <ThemePanel />
         <div className="h-5 w-px bg-border/60 mx-1 shrink-0" />
         <LofiPlayer />
+        <div className="h-5 w-px bg-border/60 mx-1 shrink-0" />
+        {/* Profile Avatar Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              className="rounded-full h-9 w-9 overflow-hidden border-2 border-primary/30 hover:border-primary/60 transition-all press-scale shadow-sm focus:outline-none"
+              title={user.name}
+              aria-label="Profile menu"
+            >
+              <Avatar className="h-full w-full">
+                <AvatarImage src={user.picture} alt={user.name} referrerPolicy="no-referrer" />
+                <AvatarFallback className="bg-pink-100 text-pink-600 text-xs font-bold">
+                  {user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            sideOffset={12}
+            className="w-56 rounded-2xl border border-border/40 shadow-xl bg-card/95 backdrop-blur-md p-1.5"
+          >
+            {/* User info header */}
+            <DropdownMenuLabel className="flex items-center gap-3 p-3 rounded-xl">
+              <Avatar className="h-10 w-10 shrink-0">
+                <AvatarImage src={user.picture} alt={user.name} referrerPolicy="no-referrer" />
+                <AvatarFallback className="bg-pink-100 text-pink-600 text-xs font-bold">
+                  {user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col min-w-0">
+                <span className="text-sm font-bold text-foreground truncate">{user.name}</span>
+                <span className="text-[11px] text-muted-foreground truncate">{user.email}</span>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator className="my-1" />
+            <DropdownMenuItem
+              className="flex items-center gap-2 text-sm rounded-lg px-3 py-2 cursor-default text-muted-foreground"
+              disabled
+            >
+              <User className="h-4 w-4" />
+              My Profile
+            </DropdownMenuItem>
+            <DropdownMenuSeparator className="my-1" />
+            <DropdownMenuItem
+              className="flex items-center gap-2 text-sm rounded-lg px-3 py-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
+              onClick={handleSignOut}
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
     </div>
