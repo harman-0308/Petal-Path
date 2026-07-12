@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Settings, Sun, Moon } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card } from "@/components/ui/card";
@@ -26,6 +26,21 @@ export default function ThemePanel() {
   const [accent, setAccent] = useLocalStorage("petal-theme-accent", "rose");
   const [font, setFont] = useLocalStorage("petal-theme-font", "nunito");
   const [theme, setTheme] = useLocalStorage("petal-theme-mode", "light");
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (panelRef.current && !panelRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -53,7 +68,7 @@ export default function ThemePanel() {
   }, [accent, font, theme]);
 
   return (
-    <div className="relative inline-block">
+    <div ref={panelRef} className="relative inline-block">
       <Button 
         variant="outline" 
         size="icon" 
