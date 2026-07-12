@@ -84,25 +84,27 @@ export default function Dashboard() {
       {/* Main Content Area */}
       <div className="max-w-[1400px] mx-auto p-4 md:p-8 space-y-8">
         
-        {/* Header */}
-        <header className="pb-6 border-b border-border/40 flex flex-col gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-primary text-xl">✿</span>
-            <span className="font-bold text-muted-foreground tracking-wider uppercase text-xs">Petal Path</span>
-          </div>
-          <div className="flex justify-between items-start md:items-end gap-6">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-                {getGreeting()} <WeatherWidget />
-              </h1>
-              <p className="text-muted-foreground mt-2 font-medium">
-                {format(time, "EEEE, MMMM do")} • {format(time, "h:mm a")}
-              </p>
+        {/* Compact Content Header */}
+        <header className="pb-4 border-b border-border/30 flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-2 text-[10px] md:text-xs font-bold text-muted-foreground tracking-wider uppercase">
+              <span className="text-primary text-sm leading-none">✿</span>
+              <span>Petal Path</span>
+              <span className="opacity-40">•</span>
+              <span>{format(time, "EEEE, MMMM do")}</span>
+              <span className="opacity-40">•</span>
+              <span>{format(time, "h:mm a")}</span>
             </div>
+            <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
+              {getGreeting()} <WeatherWidget />
+            </h1>
+          </div>
+          
+          {/* Integrated Stats Bar */}
+          <div className="flex-shrink-0">
+            <GamificationBar />
           </div>
         </header>
-
-        <GamificationBar />
 
         {/* Content Area */}
         <AnimatePresence mode="wait">
