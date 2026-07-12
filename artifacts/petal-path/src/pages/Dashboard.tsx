@@ -206,11 +206,10 @@ export default function Dashboard() {
           )}
         </AnimatePresence>
 
-        <LofiPlayer />
       </div>
 
       {/* Bottom Floating Navigation Dock */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-card/85 backdrop-blur-lg border border-primary/20 shadow-lg rounded-full px-4 py-2 flex items-center gap-1.5 md:gap-2 max-w-[95vw] md:max-w-max select-none">
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-card/85 backdrop-blur-lg border border-primary/20 shadow-lg rounded-full p-1.5 flex items-center gap-1 md:gap-1.5 max-w-[95vw] md:max-w-max select-none">
         {TABS.map(tab => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -218,20 +217,22 @@ export default function Dashboard() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-bold transition-all duration-200 press-scale whitespace-nowrap ${
+              className={`flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-full text-xs font-bold transition-all duration-200 press-scale whitespace-nowrap ${
                 isActive
-                  ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20 scale-[1.05]"
+                  ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               }`}
               data-testid={`tab-${tab.id}`}
             >
-              <Icon className="h-4.5 w-4.5 animate-duration-300" />
-              <span className="hidden sm:inline">{tab.label}</span>
+              <Icon className="h-4 w-4 flex-shrink-0" />
+              <span className="hidden sm:inline leading-none">{tab.label}</span>
             </button>
           );
         })}
         <div className="h-5 w-px bg-border/60 mx-1 shrink-0" />
         <ThemePanel />
+        <div className="h-5 w-px bg-border/60 mx-1 shrink-0" />
+        <LofiPlayer />
       </div>
 
     </div>
