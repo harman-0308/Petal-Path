@@ -14,11 +14,11 @@ const COLORS = [
 ];
 
 const FONTS = [
-  { id: "inter", label: "Inter", value: "'Inter', sans-serif" },
-  { id: "nunito", label: "Nunito", value: "'Nunito', sans-serif" },
-  { id: "outfit", label: "Outfit", value: "'Outfit', sans-serif" },
-  { id: "quicksand", label: "Quicksand", value: "'Quicksand', sans-serif" },
-  { id: "comfortaa", label: "Comfortaa", value: "'Comfortaa', sans-serif" },
+  { id: "inter", label: "Inter", value: "'Inter', 'Noto Color Emoji', 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif" },
+  { id: "nunito", label: "Nunito", value: "'Nunito', 'Noto Color Emoji', 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif" },
+  { id: "outfit", label: "Outfit", value: "'Outfit', 'Noto Color Emoji', 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif" },
+  { id: "quicksand", label: "Quicksand", value: "'Quicksand', 'Noto Color Emoji', 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif" },
+  { id: "comfortaa", label: "Comfortaa", value: "'Comfortaa', 'Noto Color Emoji', 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif" },
 ];
 
 export default function ThemePanel() {
