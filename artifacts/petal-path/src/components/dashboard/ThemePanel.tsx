@@ -62,7 +62,7 @@ export default function ThemePanel() {
       </Button>
 
       {isOpen && (
-        <Card className="absolute top-12 right-0 w-56 p-4 rounded-2xl shadow-lg flex flex-col gap-4 bg-card z-50">
+        <Card className="absolute top-12 left-0 w-56 p-4 rounded-2xl shadow-lg flex flex-col gap-4 bg-card z-50">
           <div>
             <h4 className="text-xs font-bold text-muted-foreground mb-2">Accent Color</h4>
             <div className="flex gap-2 flex-wrap">

@@ -184,13 +184,25 @@ export default function WellnessView() {
                   {currentCycleDay > 0 && ` • Day ${currentCycleDay}`}
                 </CardDescription>
               </div>
-              <Button 
-                onClick={togglePeriodStart} 
-                variant={activeCycle && !activeCycle.endDate ? "default" : "outline"}
-                className={`rounded-full ${activeCycle && !activeCycle.endDate ? 'bg-primary hover:bg-primary/90 text-white' : 'border-primary text-primary hover:bg-primary/10'}`}
-              >
-                {activeCycle && !activeCycle.endDate ? "End Period" : "Log Period"}
-              </Button>
+              <div className="flex items-center gap-2">
+                {activeCycle && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setCycles(cycles.filter(c => c.id !== activeCycle.id))}
+                    className="rounded-full text-xs text-destructive hover:bg-destructive/10 hover:text-destructive px-3"
+                  >
+                    Remove log
+                  </Button>
+                )}
+                <Button 
+                  onClick={togglePeriodStart} 
+                  variant={activeCycle && !activeCycle.endDate ? "default" : "outline"}
+                  className={`rounded-full ${activeCycle && !activeCycle.endDate ? 'bg-primary hover:bg-primary/90 text-white' : 'border-primary text-primary hover:bg-primary/10'}`}
+                >
+                  {activeCycle && !activeCycle.endDate ? "End Period" : "Log Period"}
+                </Button>
+              </div>
             </div>
             <CardContent className="p-4 space-y-6">
               {/* Custom Calendar */}
