@@ -25,9 +25,31 @@ import LofiPlayer from "../components/dashboard/LofiPlayer";
 import ThemePanel from "../components/dashboard/ThemePanel";
 import GamificationBar from "../components/dashboard/GamificationBar";
 import FinanceView from "../components/dashboard/FinanceView";
+import { 
+  Menu, 
+  X, 
+  Sun, 
+  CalendarRange, 
+  CalendarDays, 
+  Heart, 
+  BrainCircuit, 
+  PenLine, 
+  Wallet 
+} from "lucide-react";
+
+const TABS = [
+  { id: "daily", label: "Daily", icon: Sun },
+  { id: "weekly", label: "Weekly", icon: CalendarRange },
+  { id: "monthly", label: "Monthly", icon: CalendarDays },
+  { id: "wellness", label: "Wellness", icon: Heart },
+  { id: "focus", label: "Focus", icon: BrainCircuit },
+  { id: "journal", label: "Journal", icon: PenLine },
+  { id: "finance", label: "Finance", icon: Wallet },
+];
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("daily");
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -57,48 +79,26 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8 font-sans selection:bg-primary/20 overflow-x-hidden">
-      <div className="max-w-[1400px] mx-auto space-y-8">
+    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 overflow-x-hidden pb-32">
+      
+      {/* Main Content Area */}
+      <div className="max-w-[1400px] mx-auto p-4 md:p-8 space-y-8">
         
-        <ThemePanel />
         {/* Header */}
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pb-6 border-b border-border/40">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-primary text-xl">✿</span>
-              <span className="font-bold text-muted-foreground tracking-wider uppercase text-xs">Petal Path</span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-              {getGreeting()} <WeatherWidget />
-            </h1>
-            <p className="text-muted-foreground mt-2 font-medium">
-              {format(time, "EEEE, MMMM do")} • {format(time, "h:mm a")}
-            </p>
+        <header className="pb-6 border-b border-border/40 flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-primary text-xl">✿</span>
+            <span className="font-bold text-muted-foreground tracking-wider uppercase text-xs">Petal Path</span>
           </div>
-
-          <div className="flex bg-card p-1 rounded-full border border-border/50 shadow-sm shadow-primary/5 overflow-x-auto no-scrollbar">
-            {[
-              { id: "daily", label: "Daily" },
-              { id: "weekly", label: "Weekly" },
-              { id: "monthly", label: "Monthly" },
-              { id: "wellness", label: "Wellness" },
-              { id: "focus", label: "Focus" },
-              { id: "journal", label: "Journal" },
-              { id: "finance", label: "Finance" },
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap tracking-wide ${
-                  activeTab === tab.id
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                }`}
-                data-testid={`tab-${tab.id}`}
-              >
-                {tab.label}
-              </button>
-            ))}
+          <div className="flex justify-between items-start md:items-end gap-6">
+            <div>
+              <h1 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
+                {getGreeting()} <WeatherWidget />
+              </h1>
+              <p className="text-muted-foreground mt-2 font-medium">
+                {format(time, "EEEE, MMMM do")} • {format(time, "h:mm a")}
+              </p>
+            </div>
           </div>
         </header>
 
@@ -206,6 +206,32 @@ export default function Dashboard() {
 
         <LofiPlayer />
       </div>
+
+      {/* Bottom Floating Navigation Dock */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-card/85 backdrop-blur-lg border border-primary/20 shadow-lg rounded-full px-4 py-2 flex items-center gap-1.5 md:gap-2 max-w-[95vw] md:max-w-max select-none">
+        {TABS.map(tab => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-bold transition-all duration-200 press-scale whitespace-nowrap ${
+                isActive
+                  ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20 scale-[1.05]"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              }`}
+              data-testid={`tab-${tab.id}`}
+            >
+              <Icon className="h-4.5 w-4.5 animate-duration-300" />
+              <span className="hidden sm:inline">{tab.label}</span>
+            </button>
+          );
+        })}
+        <div className="h-5 w-px bg-border/60 mx-1 shrink-0" />
+        <ThemePanel />
+      </div>
+
     </div>
   );
 }
