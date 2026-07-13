@@ -25,6 +25,7 @@ import LofiPlayer from "../components/dashboard/LofiPlayer";
 import ThemePanel from "../components/dashboard/ThemePanel";
 import GamificationBar from "../components/dashboard/GamificationBar";
 import FinanceView from "../components/dashboard/FinanceView";
+import ProfileView from "../components/dashboard/ProfileView";
 import Login, { type UserProfile } from "../components/dashboard/Login";
 import {
   DropdownMenu,
@@ -56,6 +57,7 @@ const TABS = [
   { id: "focus", label: "Focus", icon: BrainCircuit },
   { id: "journal", label: "Journal", icon: PenLine },
   { id: "finance", label: "Finance", icon: Wallet },
+  { id: "profile", label: "Profile", icon: User },
 ];
 
 export default function Dashboard() {
@@ -236,6 +238,12 @@ export default function Dashboard() {
           {activeTab === "finance" && (
             <motion.div key="finance" variants={containerVariants} initial="hidden" animate="show" exit="exit">
               <FinanceView />
+            </motion.div>
+          )}
+
+          {activeTab === "profile" && (
+            <motion.div key="profile" variants={containerVariants} initial="hidden" animate="show" exit="exit">
+              <ProfileView />
             </motion.div>
           )}
         </AnimatePresence>
