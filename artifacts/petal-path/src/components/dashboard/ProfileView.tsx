@@ -6,7 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Sparkles, Target, Heart, Briefcase, Settings2, CheckCircle2 } from "lucide-react";
+import type { UserProfile as AuthUser } from "./Login";
 
 type UserProfile = {
   gender: string;
@@ -32,6 +34,8 @@ export default function ProfileView() {
     interests: [],
     isComplete: false,
   });
+
+  const [authUser] = useLocalStorage<AuthUser | null>("petal-user", null);
 
   const [isEditing, setIsEditing] = useState(!profile.isComplete);
   const [tempProfile, setTempProfile] = useState<UserProfile>(profile);
@@ -301,13 +305,21 @@ export default function ProfileView() {
               </Button>
               
               <div className="pt-20 px-6 pb-6 relative z-10 flex flex-col items-center text-center">
-                <div className="w-24 h-24 rounded-full bg-background border-4 border-card flex items-center justify-center text-primary shadow-lg mb-4">
-                  <User className="w-10 h-10" />
-                </div>
+                <Avatar className="w-24 h-24 border-4 border-card shadow-lg mb-4 text-primary bg-background">
+                  <AvatarImage src={authUser?.picture} alt={authUser?.name} />
+                  <AvatarFallback className="text-3xl font-bold bg-primary/10">
+                    {authUser?.name?.charAt(0) || <User className="w-10 h-10" />}
+                  </AvatarFallback>
+                </Avatar>
                 
-                <h2 className="text-2xl font-bold text-foreground">Your Profile</h2>
+                <h2 className="text-2xl font-bold text-foreground">
+                  {authUser?.name || "Your Profile"}
+                </h2>
+                {authUser?.email && (
+                  <p className="text-muted-foreground text-xs mt-0.5">{authUser.email}</p>
+                )}
                 {profile.occupation && (
-                  <p className="text-muted-foreground text-sm font-medium mt-1">{profile.occupation}</p>
+                  <p className="text-primary text-sm font-medium mt-1.5">{profile.occupation}</p>
                 )}
                 
                 <div className="w-full h-px bg-border/40 my-6" />
