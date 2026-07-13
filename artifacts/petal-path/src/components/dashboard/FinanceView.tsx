@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format, startOfMonth, endOfMonth, isWithinInterval, parseISO, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay } from "date-fns";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useSettings } from "@/hooks/use-settings";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,8 @@ const CATEGORIES = [
 const NOTE_COLORS = ["bg-primary/10", "bg-secondary/10", "bg-accent/10", "bg-muted"];
 
 export default function FinanceView() {
+  const { settings } = useSettings();
+  const weekStartsOn = settings.weekStart === "monday" ? 1 : 0;
   const [balance, setBalance] = useLocalStorage<number>("petal-finance-balance", 0);
   const [savingsTarget, setSavingsTarget] = useLocalStorage<number>("petal-finance-savings-target", 0);
   const [expenses, setExpenses] = useLocalStorage<Expense[]>("petal-finance-expenses", []);
@@ -70,8 +73,8 @@ export default function FinanceView() {
   const remainingBalance = balance - totalSpentThisMonth;
 
   const currentWeekExpenses = useMemo(() => {
-    const start = startOfWeek(now, { weekStartsOn: 1 });
-    const end = endOfWeek(now, { weekStartsOn: 1 });
+    const start = startOfWeek(now, { weekStartsOn });
+    const end = endOfWeek(now, { weekStartsOn });
     return expenses.filter(e => {
       const d = parseISO(e.date);
       return isWithinInterval(d, { start, end });
@@ -94,8 +97,8 @@ export default function FinanceView() {
   }, [currentMonthExpenses]);
 
   const barChartData = useMemo(() => {
-    const start = startOfWeek(now, { weekStartsOn: 1 });
-    const end = endOfWeek(now, { weekStartsOn: 1 });
+    const start = startOfWeek(now, { weekStartsOn });
+    const end = endOfWeek(now, { weekStartsOn });
     const days = eachDayOfInterval({ start, end });
     
     return days.map(day => {
@@ -181,7 +184,7 @@ export default function FinanceView() {
               />
             ) : (
               <h2 
-                className="text-3xl font-extrabold cursor-pointer hover:text-primary transition-colors"
+                className="text-3xl font-extrabold cursor-pointer hover:text-primary transition-colors blur-sensitive"
                 onClick={() => setIsEditingBalance(true)}
               >
                 £{balance.toFixed(2)}
@@ -196,7 +199,7 @@ export default function FinanceView() {
             <div className="p-3 rounded-full bg-destructive/10 text-destructive">
               <TrendingDown className="w-6 h-6" />
             </div>
-            <h2 className="text-3xl font-extrabold text-foreground">
+            <h2 className="text-3xl font-extrabold text-foreground blur-sensitive">
               £{totalSpentThisMonth.toFixed(2)}
             </h2>
             <p className="text-sm font-medium text-muted-foreground">Spent This Month</p>
@@ -208,7 +211,7 @@ export default function FinanceView() {
             <div className={`p-3 rounded-full ${remainingBalance >= 0 ? 'bg-green-500/10 text-green-600' : 'bg-destructive/10 text-destructive'}`}>
               <PiggyBank className="w-6 h-6" />
             </div>
-            <h2 className={`text-3xl font-extrabold ${remainingBalance >= 0 ? 'text-green-600' : 'text-destructive'}`}>
+            <h2 className={`text-3xl font-extrabold blur-sensitive ${remainingBalance >= 0 ? 'text-green-600' : 'text-destructive'}`}>
               £{remainingBalance.toFixed(2)}
             </h2>
             <p className="text-sm font-medium text-muted-foreground">Remaining Balance</p>
@@ -231,7 +234,7 @@ export default function FinanceView() {
               />
             ) : (
               <h2 
-                className="text-3xl font-extrabold cursor-pointer hover:text-secondary-foreground transition-colors"
+                className="text-3xl font-extrabold cursor-pointer hover:text-secondary-foreground transition-colors blur-sensitive"
                 onClick={() => setIsEditingTarget(true)}
               >
                 £{savingsTarget.toFixed(2)}
