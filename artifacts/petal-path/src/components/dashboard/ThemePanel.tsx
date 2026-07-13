@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Settings, Sun, Moon } from "lucide-react";
+import { Palette, Sun, Moon } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -75,7 +75,7 @@ export default function ThemePanel() {
         className="rounded-full h-9 w-9 shadow-sm bg-card border border-border/40 hover:bg-muted press-scale flex items-center justify-center"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <Settings className="h-4.5 w-4.5 text-muted-foreground" />
+        <Palette className="h-4.5 w-4.5 text-muted-foreground" />
       </Button>
 
       {isOpen && (
