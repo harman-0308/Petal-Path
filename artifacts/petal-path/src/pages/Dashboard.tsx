@@ -27,6 +27,7 @@ import GamificationBar from "../components/dashboard/GamificationBar";
 import FinanceView from "../components/dashboard/FinanceView";
 import ProfileView from "../components/dashboard/ProfileView";
 import OnboardingView from "../components/dashboard/OnboardingView";
+import SettingsView from "../components/dashboard/SettingsView";
 import Login, { type UserProfile } from "../components/dashboard/Login";
 import { toast } from "sonner";
 import {
@@ -39,6 +40,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useSettings } from "@/hooks/use-settings";
 import {
   Sun,
   CalendarRange,
@@ -63,9 +65,11 @@ const TABS = [
 ];
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState("daily");
+  const { settings } = useSettings();
+  const [activeTab, setActiveTab] = useState(settings.startupView || "daily");
   const [time, setTime] = useState(new Date());
   const [user, setUser] = useLocalStorage<UserProfile | null>("petal-user", null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   
   // Profile & Onboarding State
   const [profile] = useLocalStorage<any>("petal-user-profile", { isComplete: false });
@@ -145,7 +149,7 @@ export default function Dashboard() {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 }
+      transition: { staggerChildren: 0.1 },
     },
     exit: { opacity: 0, y: -10, transition: { duration: 0.2 } }
   };
@@ -156,8 +160,10 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 overflow-x-hidden pb-32">
-      
+    <div className={`min-h-screen bg-background font-sans selection:bg-primary/20 overflow-x-hidden pb-32 ${settings.privacyBlur ? 'blur-active' : ''}`}>
+      {/* Settings Modal */}
+      <SettingsView open={isSettingsOpen} onOpenChange={setIsSettingsOpen} />
+
       {/* Main Content Area */}
       <div className="max-w-[1400px] mx-auto p-4 md:p-8 space-y-8">
         
@@ -170,7 +176,7 @@ export default function Dashboard() {
               <span className="opacity-40">•</span>
               <span>{format(time, "EEEE, MMMM do")}</span>
               <span className="opacity-40">•</span>
-              <span>{format(time, "h:mm a")}</span>
+              <span>{format(time, settings.timeFormat === "24h" ? "HH:mm" : "h:mm a")}</span>
             </div>
             <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
               {getGreeting()} <WeatherWidget />
@@ -361,7 +367,10 @@ export default function Dashboard() {
             </DropdownMenuItem>
             <DropdownMenuItem
               className="flex items-center gap-2 text-sm rounded-lg px-3 py-2 cursor-pointer focus:bg-primary/10 focus:text-primary"
-              onClick={() => toast.info("Settings panel coming soon!")}
+              onSelect={(e) => {
+                e.preventDefault();
+                setIsSettingsOpen(true);
+              }}
             >
               <Settings className="h-4 w-4" />
               Settings
