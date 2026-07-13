@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import DailyPlanner from "../components/dashboard/DailyPlanner";
@@ -25,22 +25,80 @@ import LofiPlayer from "../components/dashboard/LofiPlayer";
 import ThemePanel from "../components/dashboard/ThemePanel";
 import GamificationBar from "../components/dashboard/GamificationBar";
 import FinanceView from "../components/dashboard/FinanceView";
+import ProfileView from "../components/dashboard/ProfileView";
+import Login, { type UserProfile } from "../components/dashboard/Login";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import {
+  Sun,
+  CalendarRange,
+  CalendarDays,
+  Heart,
+  BrainCircuit,
+  PenLine,
+  Wallet,
+  LogOut,
+  User,
+} from "lucide-react";
+
+const TABS = [
+  { id: "daily", label: "Daily", icon: Sun },
+  { id: "weekly", label: "Weekly", icon: CalendarRange },
+  { id: "monthly", label: "Monthly", icon: CalendarDays },
+  { id: "wellness", label: "Wellness", icon: Heart },
+  { id: "focus", label: "Focus", icon: BrainCircuit },
+  { id: "journal", label: "Journal", icon: PenLine },
+  { id: "finance", label: "Finance", icon: Wallet },
+  { id: "profile", label: "Profile", icon: User },
+];
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("daily");
   const [time, setTime] = useState(new Date());
+  const [user, setUser] = useLocalStorage<UserProfile | null>("petal-user", null);
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
+  const handleLoginSuccess = useCallback((profile: UserProfile) => {
+    setUser(profile);
+  }, [setUser]);
+
+  const handleSignOut = useCallback(() => {
+    setUser(null);
+    // Also revoke Google session if available
+    try {
+      // @ts-ignore
+      if (window.google?.accounts?.id) {
+        // @ts-ignore
+        window.google.accounts.id.disableAutoSelect();
+      }
+    } catch {/* ignore */}
+  }, [setUser]);
+
   const getGreeting = () => {
     const hour = time.getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
+    const firstName = user?.name?.split(" ")[0] ?? "";
+    const suffix = firstName ? `, ${firstName}` : "";
+    if (hour < 12) return `Good morning${suffix}`;
+    if (hour < 18) return `Good afternoon${suffix}`;
+    return `Good evening${suffix}`;
   };
+
+  // Show login screen if not authenticated
+  if (!user) {
+    return <Login onLoginSuccess={handleLoginSuccess} />;
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -57,52 +115,32 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8 font-sans selection:bg-primary/20 overflow-x-hidden">
-      <div className="max-w-[1400px] mx-auto space-y-8">
+    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 overflow-x-hidden pb-32">
+      
+      {/* Main Content Area */}
+      <div className="max-w-[1400px] mx-auto p-4 md:p-8 space-y-8">
         
-        <ThemePanel />
-        {/* Header */}
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pb-6 border-b border-border/40">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-primary text-xl">✿</span>
-              <span className="font-bold text-muted-foreground tracking-wider uppercase text-xs">Petal Path</span>
+        {/* Compact Content Header */}
+        <header className="pb-4 border-b border-border/30 flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-2 text-[10px] md:text-xs font-bold text-muted-foreground tracking-wider uppercase">
+              <span className="text-primary text-sm leading-none">✿</span>
+              <span>Petal Path</span>
+              <span className="opacity-40">•</span>
+              <span>{format(time, "EEEE, MMMM do")}</span>
+              <span className="opacity-40">•</span>
+              <span>{format(time, "h:mm a")}</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
               {getGreeting()} <WeatherWidget />
             </h1>
-            <p className="text-muted-foreground mt-2 font-medium">
-              {format(time, "EEEE, MMMM do")} • {format(time, "h:mm a")}
-            </p>
           </div>
-
-          <div className="flex bg-card p-1 rounded-full border border-border/50 shadow-sm shadow-primary/5 overflow-x-auto no-scrollbar">
-            {[
-              { id: "daily", label: "Daily" },
-              { id: "weekly", label: "Weekly" },
-              { id: "monthly", label: "Monthly" },
-              { id: "wellness", label: "Wellness" },
-              { id: "focus", label: "Focus" },
-              { id: "journal", label: "Journal" },
-              { id: "finance", label: "Finance" },
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 whitespace-nowrap tracking-wide ${
-                  activeTab === tab.id
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                }`}
-                data-testid={`tab-${tab.id}`}
-              >
-                {tab.label}
-              </button>
-            ))}
+          
+          {/* Integrated Stats Bar */}
+          <div className="flex-shrink-0">
+            <GamificationBar />
           </div>
         </header>
-
-        <GamificationBar />
 
         {/* Content Area */}
         <AnimatePresence mode="wait">
@@ -202,10 +240,96 @@ export default function Dashboard() {
               <FinanceView />
             </motion.div>
           )}
+
+          {activeTab === "profile" && (
+            <motion.div key="profile" variants={containerVariants} initial="hidden" animate="show" exit="exit">
+              <ProfileView />
+            </motion.div>
+          )}
         </AnimatePresence>
 
-        <LofiPlayer />
       </div>
+
+      {/* Bottom Floating Navigation Dock */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-card/85 backdrop-blur-lg border border-primary/20 shadow-lg rounded-full p-1.5 flex items-center gap-1 md:gap-1.5 max-w-[95vw] md:max-w-max select-none">
+        {TABS.map(tab => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-full text-xs font-bold transition-all duration-200 press-scale whitespace-nowrap ${
+                isActive
+                  ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              }`}
+              data-testid={`tab-${tab.id}`}
+            >
+              <Icon className="h-4 w-4 flex-shrink-0" />
+              <span className="hidden sm:inline leading-none">{tab.label}</span>
+            </button>
+          );
+        })}
+        <div className="h-5 w-px bg-border/60 mx-1 shrink-0" />
+        <ThemePanel />
+        <div className="h-5 w-px bg-border/60 mx-1 shrink-0" />
+        <LofiPlayer />
+        <div className="h-5 w-px bg-border/60 mx-1 shrink-0" />
+        {/* Profile Avatar Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              className="rounded-full h-9 w-9 overflow-hidden border-2 border-primary/30 hover:border-primary/60 transition-all press-scale shadow-sm focus:outline-none"
+              title={user.name}
+              aria-label="Profile menu"
+            >
+              <Avatar className="h-full w-full">
+                <AvatarImage src={user.picture} alt={user.name} referrerPolicy="no-referrer" />
+                <AvatarFallback className="bg-pink-100 text-pink-600 text-xs font-bold">
+                  {user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            sideOffset={12}
+            className="w-56 rounded-2xl border border-border/40 shadow-xl bg-card/95 backdrop-blur-md p-1.5"
+          >
+            {/* User info header */}
+            <DropdownMenuLabel className="flex items-center gap-3 p-3 rounded-xl">
+              <Avatar className="h-10 w-10 shrink-0">
+                <AvatarImage src={user.picture} alt={user.name} referrerPolicy="no-referrer" />
+                <AvatarFallback className="bg-pink-100 text-pink-600 text-xs font-bold">
+                  {user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col min-w-0">
+                <span className="text-sm font-bold text-foreground truncate">{user.name}</span>
+                <span className="text-[11px] text-muted-foreground truncate">{user.email}</span>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator className="my-1" />
+            <DropdownMenuItem
+              className="flex items-center gap-2 text-sm rounded-lg px-3 py-2 cursor-default text-muted-foreground"
+              disabled
+            >
+              <User className="h-4 w-4" />
+              My Profile
+            </DropdownMenuItem>
+            <DropdownMenuSeparator className="my-1" />
+            <DropdownMenuItem
+              className="flex items-center gap-2 text-sm rounded-lg px-3 py-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
+              onClick={handleSignOut}
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
     </div>
   );
 }
