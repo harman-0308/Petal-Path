@@ -26,7 +26,10 @@ import ThemePanel from "../components/dashboard/ThemePanel";
 import GamificationBar from "../components/dashboard/GamificationBar";
 import FinanceView from "../components/dashboard/FinanceView";
 import ProfileView from "../components/dashboard/ProfileView";
+import OnboardingView from "../components/dashboard/OnboardingView";
+import SettingsView from "../components/dashboard/SettingsView";
 import Login, { type UserProfile } from "../components/dashboard/Login";
+import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -37,6 +40,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useSettings } from "@/hooks/use-settings";
 import {
   Sun,
   CalendarRange,
@@ -47,6 +51,7 @@ import {
   Wallet,
   LogOut,
   User,
+  Settings,
 } from "lucide-react";
 
 const TABS = [
@@ -57,18 +62,48 @@ const TABS = [
   { id: "focus", label: "Focus", icon: BrainCircuit },
   { id: "journal", label: "Journal", icon: PenLine },
   { id: "finance", label: "Finance", icon: Wallet },
-  { id: "profile", label: "Profile", icon: User },
 ];
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState("daily");
+  const { settings } = useSettings();
+  const [activeTab, setActiveTab] = useState(settings.startupView || "daily");
   const [time, setTime] = useState(new Date());
   const [user, setUser] = useLocalStorage<UserProfile | null>("petal-user", null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  
+  // Profile & Onboarding State
+  const [profile] = useLocalStorage<any>("petal-user-profile", { isComplete: false });
+  const [hasSkippedOnboarding, setHasSkippedOnboarding] = useLocalStorage("petal-onboarding-skipped", false);
+  const [hasShownReminder, setHasShownReminder] = useLocalStorage("petal-onboarding-reminder-shown", false);
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Gentle Reminder Logic (2 minutes after skipping)
+  useEffect(() => {
+    if (!user || !hasSkippedOnboarding || profile.isComplete || hasShownReminder) {
+      return;
+    }
+    
+    const reminderTimer = setTimeout(() => {
+      toast("Complete your profile ✿", {
+        description: "Want better personalized AI insights and widget recommendations? Take a moment to finish your profile setup.",
+        action: {
+          label: "Complete Now",
+          onClick: () => {
+            setActiveTab("profile");
+            setHasShownReminder(true);
+          },
+        },
+        duration: 10000, // Show for 10 seconds
+      });
+      setHasShownReminder(true);
+    }, 120000); // 2 minutes (120,000 ms)
+
+    return () => clearTimeout(reminderTimer);
+  }, [user, hasSkippedOnboarding, profile.isComplete, hasShownReminder, setHasShownReminder]);
 
   const handleLoginSuccess = useCallback((profile: UserProfile) => {
     setUser(profile);
@@ -100,11 +135,21 @@ export default function Dashboard() {
     return <Login onLoginSuccess={handleLoginSuccess} />;
   }
 
+  // Show Onboarding screen if profile is not complete and user hasn't skipped
+  if (!profile.isComplete && !hasSkippedOnboarding) {
+    return (
+      <OnboardingView 
+        onComplete={() => setActiveTab("daily")} 
+        onSkip={() => setHasSkippedOnboarding(true)} 
+      />
+    );
+  }
+
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 }
+      transition: { staggerChildren: 0.1 },
     },
     exit: { opacity: 0, y: -10, transition: { duration: 0.2 } }
   };
@@ -115,8 +160,10 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 overflow-x-hidden pb-32">
-      
+    <div className={`min-h-screen bg-background font-sans selection:bg-primary/20 overflow-x-hidden pb-32 ${settings.privacyBlur ? 'blur-active' : ''}`}>
+      {/* Settings Modal */}
+      <SettingsView open={isSettingsOpen} onOpenChange={setIsSettingsOpen} onNavigateToProfile={() => setActiveTab("profile")} />
+
       {/* Main Content Area */}
       <div className="max-w-[1400px] mx-auto p-4 md:p-8 space-y-8">
         
@@ -129,7 +176,7 @@ export default function Dashboard() {
               <span className="opacity-40">•</span>
               <span>{format(time, "EEEE, MMMM do")}</span>
               <span className="opacity-40">•</span>
-              <span>{format(time, "h:mm a")}</span>
+              <span>{format(time, settings.timeFormat === "24h" ? "HH:mm" : "h:mm a")}</span>
             </div>
             <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
               {getGreeting()} <WeatherWidget />
@@ -312,11 +359,21 @@ export default function Dashboard() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="my-1" />
             <DropdownMenuItem
-              className="flex items-center gap-2 text-sm rounded-lg px-3 py-2 cursor-default text-muted-foreground"
-              disabled
+              className="flex items-center gap-2 text-sm rounded-lg px-3 py-2 cursor-pointer focus:bg-primary/10 focus:text-primary"
+              onClick={() => setActiveTab("profile")}
             >
               <User className="h-4 w-4" />
               My Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="flex items-center gap-2 text-sm rounded-lg px-3 py-2 cursor-pointer focus:bg-primary/10 focus:text-primary"
+              onSelect={(e) => {
+                e.preventDefault();
+                setIsSettingsOpen(true);
+              }}
+            >
+              <Settings className="h-4 w-4" />
+              Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator className="my-1" />
             <DropdownMenuItem

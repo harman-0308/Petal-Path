@@ -1,16 +1,19 @@
 import { format, startOfWeek, addDays, isSameDay } from "date-fns";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useSettings } from "@/hooks/use-settings";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 
 export default function WeeklyView() {
+  const { settings } = useSettings();
   const [habits] = useLocalStorage<{ id: string; name: string; streak: number }[]>("petal-habits", []);
   const [habitLogs] = useLocalStorage<Record<string, string[]>>("petal-habit-logs", {});
   const [sleepLogs] = useLocalStorage<Record<string, { duration?: string }>>("petal-sleep", {});
   const [weekNotes, setWeekNotes] = useLocalStorage<Record<string, string>>("petal-week-notes", {});
 
   const today = new Date();
-  const startOfCurrentWeek = startOfWeek(today, { weekStartsOn: 1 });
+  const weekStartsOn = settings.weekStart === "monday" ? 1 : 0;
+  const startOfCurrentWeek = startOfWeek(today, { weekStartsOn });
   const weekDays = Array.from({ length: 7 }).map((_, i) => addDays(startOfCurrentWeek, i));
 
   let totalHabitsCompleted = 0;

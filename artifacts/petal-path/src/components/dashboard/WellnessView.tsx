@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { format, subDays, addDays, differenceInDays, parseISO, isSameDay, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isToday, isBefore } from "date-fns";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useSettings } from "@/hooks/use-settings";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -18,6 +19,9 @@ const DEFAULT_CYCLE_LENGTH = 28;
 const DEFAULT_PERIOD_LENGTH = 5;
 
 export default function WellnessView() {
+  const { settings } = useSettings();
+  const weekStartsOn = settings.weekStart === "monday" ? 1 : 0;
+  
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -94,8 +98,8 @@ export default function WellnessView() {
   // Calendar rendering
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
-  const startDate = startOfWeek(monthStart);
-  const endDate = endOfWeek(monthEnd);
+  const startDate = startOfWeek(monthStart, { weekStartsOn });
+  const endDate = endOfWeek(monthEnd, { weekStartsOn });
   const calendarDays = eachDayOfInterval({ start: startDate, end: endDate });
 
   const prevMonth = () => setCurrentMonth(subDays(monthStart, 1));

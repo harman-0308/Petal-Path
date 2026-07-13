@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format, subDays, isSameDay, parseISO } from "date-fns";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useSettings } from "@/hooks/use-settings";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,6 +57,8 @@ export default function FocusView() {
   const [pomodoroCount, setPomodoroCount] = useState(0);
   const timerRef = useRef<number | null>(null);
 
+  const { settings } = useSettings();
+
   // === Settings State ===
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [editDurations, setEditDurations] = useState<TimerDurations>(durations);
@@ -75,6 +78,7 @@ export default function FocusView() {
 
   // === Sound ===
   const playChime = useCallback(() => {
+    if (!settings.soundEnabled) return;
     try {
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
       if (!AudioContextClass) return;

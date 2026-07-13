@@ -307,3 +307,13 @@ input[type="range"]::-moz-range-thumb {
   cursor: pointer;
   border: none;
 }
+
+/* Privacy Blur (Zen Mode) */
+.blur-active .blur-sensitive {
+  filter: blur(8px);
+  transition: filter 0.3s ease;
+}
+
+.blur-active .blur-sensitive:hover {
+  filter: blur(0px);
+}

@@ -1,6 +1,7 @@
 import { useState, FormEvent } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths } from "date-fns";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useSettings } from "@/hooks/use-settings";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Target, Trash2 } from "lucide-react";
@@ -10,6 +11,7 @@ import { Input } from "@/components/ui/input";
 type Goal = { id: string; text: string; progress: number };
 
 export default function MonthlyView() {
+  const { settings } = useSettings();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [habitLogs] = useLocalStorage<Record<string, string[]>>("petal-habit-logs", {});
   const [goals, setGoals] = useLocalStorage<Goal[]>("petal-goals", []);
@@ -21,7 +23,13 @@ export default function MonthlyView() {
   const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
   const startingDayOfWeek = monthStart.getDay();
-  const paddingDays = Array.from({ length: startingDayOfWeek === 0 ? 6 : startingDayOfWeek - 1 }).map(() => null);
+  // If Monday is start of week: Sun(0) -> 6, Mon(1) -> 0
+  // If Sunday is start of week: Sun(0) -> 0, Mon(1) -> 1
+  const paddingCount = settings.weekStart === "monday" 
+    ? (startingDayOfWeek === 0 ? 6 : startingDayOfWeek - 1)
+    : startingDayOfWeek;
+    
+  const paddingDays = Array.from({ length: paddingCount }).map(() => null);
 
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
@@ -63,7 +71,10 @@ export default function MonthlyView() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-7 gap-1 text-center mb-2">
-              {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+              {(settings.weekStart === "monday" 
+                ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+              ).map(day => (
                 <div key={day} className="text-xs font-bold text-muted-foreground uppercase">{day}</div>
               ))}
             </div>
