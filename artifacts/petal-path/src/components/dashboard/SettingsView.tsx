@@ -16,15 +16,17 @@ import {
   Download, 
   Trash2, 
   Volume2, 
-  EyeOff 
+  EyeOff,
+  User
 } from "lucide-react";
 
 interface SettingsViewProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onNavigateToProfile?: () => void;
 }
 
-export default function SettingsView({ open, onOpenChange }: SettingsViewProps) {
+export default function SettingsView({ open, onOpenChange, onNavigateToProfile }: SettingsViewProps) {
   const { settings, updateSetting } = useSettings();
   const [activeTab, setActiveTab] = useState<"personalization" | "notifications" | "privacy" | "data">("personalization");
   const [deleteConfirm, setDeleteConfirm] = useState("");
@@ -122,6 +124,21 @@ export default function SettingsView({ open, onOpenChange }: SettingsViewProps) 
               </button>
             );
           })}
+          
+          {onNavigateToProfile && (
+            <div className="mt-auto pt-4 border-t border-border/30">
+              <button
+                onClick={() => {
+                  onOpenChange(false);
+                  onNavigateToProfile();
+                }}
+                className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                <User className="w-4 h-4" />
+                Profile Settings
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Content Area */}

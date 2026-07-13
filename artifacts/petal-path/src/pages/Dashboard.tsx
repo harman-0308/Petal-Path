@@ -162,7 +162,7 @@ export default function Dashboard() {
   return (
     <div className={`min-h-screen bg-background font-sans selection:bg-primary/20 overflow-x-hidden pb-32 ${settings.privacyBlur ? 'blur-active' : ''}`}>
       {/* Settings Modal */}
-      <SettingsView open={isSettingsOpen} onOpenChange={setIsSettingsOpen} />
+      <SettingsView open={isSettingsOpen} onOpenChange={setIsSettingsOpen} onNavigateToProfile={() => setActiveTab("profile")} />
 
       {/* Main Content Area */}
       <div className="max-w-[1400px] mx-auto p-4 md:p-8 space-y-8">
