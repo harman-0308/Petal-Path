@@ -298,8 +298,11 @@ export default function ProfileView() {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="absolute top-4 right-4 bg-background/50 backdrop-blur-sm border-border/50 text-foreground hover:bg-background/80"
-                onClick={() => setIsEditing(true)}
+                className="absolute top-4 right-4 z-20 bg-background/50 backdrop-blur-sm border-border/50 text-foreground hover:bg-background/80"
+                onClick={() => {
+                  setTempProfile(profile);
+                  setIsEditing(true);
+                }}
               >
                 <Settings2 className="w-4 h-4 mr-2" /> Edit
               </Button>
