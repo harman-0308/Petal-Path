@@ -1,8 +1,8 @@
+import { useState, useRef, memo } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripHorizontal, MoreHorizontal } from "lucide-react";
+import { GripHorizontal } from "lucide-react";
 import { WidgetDef, WidgetSize } from "./widgets/registry";
-import { memo } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +32,9 @@ function SortableWidgetComponent({ widget, size, onResize }: SortableWidgetProps
     isDragging,
   } = useSortable({ id: widget.id });
 
+  const [isOpen, setIsOpen] = useState(false);
+  const pointerDownTime = useRef(0);
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -57,11 +60,31 @@ function SortableWidgetComponent({ widget, size, onResize }: SortableWidgetProps
       <div 
         className="absolute bottom-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity"
       >
-        <DropdownMenu>
+        <DropdownMenu 
+          open={isOpen} 
+          onOpenChange={(open) => {
+            if (!open) setIsOpen(false);
+          }}
+        >
           <DropdownMenuTrigger asChild>
             <button 
               {...attributes}
               {...listeners}
+              onPointerDown={(e) => {
+                pointerDownTime.current = Date.now();
+                listeners?.onPointerDown?.(e);
+              }}
+              onClick={(e) => {
+                if (Date.now() - pointerDownTime.current < 250) {
+                  setIsOpen(true);
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  setIsOpen(true);
+                }
+                listeners?.onKeyDown?.(e);
+              }}
               className="p-1.5 rounded-md bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:bg-background shadow-sm hover:text-foreground cursor-grab active:cursor-grabbing"
               title="Click for sizes, Hold & Drag to move"
             >
