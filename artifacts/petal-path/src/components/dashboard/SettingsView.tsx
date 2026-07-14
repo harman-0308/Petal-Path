@@ -153,22 +153,6 @@ export default function SettingsView({ open, onOpenChange, onNavigateToProfile }
               </div>
 
               <div className="space-y-6">
-                <div className="space-y-3">
-                  <Label className="text-sm font-bold text-foreground">Startup View</Label>
-                  <Select value={settings.startupView} onValueChange={(val) => updateSetting("startupView", val)}>
-                    <SelectTrigger className="w-full max-w-xs bg-card">
-                      <SelectValue placeholder="Select tab" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="daily">Daily Planner</SelectItem>
-                      <SelectItem value="focus">Focus Mode</SelectItem>
-                      <SelectItem value="wellness">Wellness</SelectItem>
-                      <SelectItem value="journal">Journal</SelectItem>
-                      <SelectItem value="finance">Finance</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-muted-foreground">The tab that opens automatically when you start the app.</p>
-                </div>
 
                 <div className="space-y-3">
                   <Label className="text-sm font-bold text-foreground">Time Format</Label>

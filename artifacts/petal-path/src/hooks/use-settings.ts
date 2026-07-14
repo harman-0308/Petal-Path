@@ -1,7 +1,6 @@
 import { useLocalStorage } from "./use-local-storage";
 
 export type AppSettings = {
-  startupView: string;
   timeFormat: "12h" | "24h";
   weekStart: "sunday" | "monday";
   soundEnabled: boolean;
@@ -10,7 +9,6 @@ export type AppSettings = {
 };
 
 const DEFAULT_SETTINGS: AppSettings = {
-  startupView: "daily",
   timeFormat: "12h",
   weekStart: "sunday",
   soundEnabled: true,
