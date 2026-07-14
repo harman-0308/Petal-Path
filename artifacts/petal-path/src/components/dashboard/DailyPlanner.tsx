@@ -4,13 +4,13 @@ import { motion } from "framer-motion";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { WidgetSize } from "./widgets/registry";
+import { WidgetSize, DEFAULT_WIDGET_SIZE } from "./widgets/registry";
 
 interface DailyPlannerProps {
   size?: WidgetSize;
 }
 
-export default function DailyPlanner({ size = "large" }: DailyPlannerProps) {
+export default function DailyPlanner({ size = DEFAULT_WIDGET_SIZE }: DailyPlannerProps) {
   const [entries, setEntries] = useLocalStorage<Record<string, {text: string, done: boolean}>>("petal-planner", {});
   const today = format(new Date(), "yyyy-MM-dd");
   

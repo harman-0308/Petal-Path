@@ -3,13 +3,13 @@ import { format } from "date-fns";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Button } from "@/components/ui/button";
 import { Plus, Minus } from "lucide-react";
-import { WidgetSize } from "./widgets/registry";
+import { WidgetSize, DEFAULT_WIDGET_SIZE } from "./widgets/registry";
 
 interface WaterTrackerProps {
   size?: WidgetSize;
 }
 
-export default function WaterTracker({ size = "medium" }: WaterTrackerProps) {
+export default function WaterTracker({ size = DEFAULT_WIDGET_SIZE }: WaterTrackerProps) {
   const goal = 8;
   const today = format(new Date(), "yyyy-MM-dd");
   const [waterLogs, setWaterLogs] = useLocalStorage<Record<string, number>>("petal-water", {});

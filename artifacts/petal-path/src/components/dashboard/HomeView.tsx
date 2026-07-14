@@ -18,14 +18,19 @@ import {
 import { LayoutGrid, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { UserProfile } from "./Login";
 
 import { WIDGET_REGISTRY, DEFAULT_WIDGET_LAYOUT, WidgetSize } from "./widgets/registry";
 import { SortableWidget } from "./SortableWidget";
 import WidgetPicker from "./WidgetPicker";
 
 export default function HomeView() {
-  const [activeWidgetIds, setActiveWidgetIds] = useLocalStorage<string[]>("petal-home-layout", DEFAULT_WIDGET_LAYOUT);
-  const [widgetSizes, setWidgetSizes] = useLocalStorage<Record<string, WidgetSize>>("petal-widget-sizes", {});
+  const [user] = useLocalStorage<UserProfile | null>("petal-user", null);
+  const layoutKey = user ? `petal-home-layout-${user.id}` : "petal-home-layout";
+  const sizesKey = user ? `petal-widget-sizes-${user.id}` : "petal-widget-sizes";
+
+  const [activeWidgetIds, setActiveWidgetIds] = useLocalStorage<string[]>(layoutKey, DEFAULT_WIDGET_LAYOUT);
+  const [widgetSizes, setWidgetSizes] = useLocalStorage<Record<string, WidgetSize>>(sizesKey, {});
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
