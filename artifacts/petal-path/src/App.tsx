@@ -8,6 +8,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
+      <Route path="/:tab" component={Dashboard} />
       <Route component={NotFound} />
     </Switch>
   );
