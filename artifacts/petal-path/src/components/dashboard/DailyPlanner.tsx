@@ -2,15 +2,32 @@ import { useState } from "react";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
 import { useLocalStorage } from "@/hooks/use-local-storage";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { WidgetSize } from "./widgets/registry";
 
-export default function DailyPlanner() {
+interface DailyPlannerProps {
+  size?: WidgetSize;
+}
+
+export default function DailyPlanner({ size = "large" }: DailyPlannerProps) {
   const [entries, setEntries] = useLocalStorage<Record<string, {text: string, done: boolean}>>("petal-planner", {});
   const today = format(new Date(), "yyyy-MM-dd");
   
-  const hours = Array.from({length: 18}, (_, i) => i + 6); // 6am to 11pm
+  // Decide how many hours to show based on size
+  let hours = Array.from({length: 18}, (_, i) => i + 6); // 6am to 11pm
+  
+  if (size === "small") {
+    // Show only the upcoming 4 hours based on current time
+    const currentHour = new Date().getHours();
+    const startHour = Math.max(6, Math.min(20, currentHour));
+    hours = Array.from({length: 4}, (_, i) => i + startHour);
+  } else if (size === "medium") {
+    // Show 8 hours
+    const currentHour = new Date().getHours();
+    const startHour = Math.max(6, Math.min(16, currentHour - 1));
+    hours = Array.from({length: 8}, (_, i) => i + startHour);
+  }
 
   const updateEntry = (hour: number, field: "text" | "done", value: any) => {
     const key = `${today}-${hour}`;
@@ -26,11 +43,12 @@ export default function DailyPlanner() {
   };
 
   return (
-    <Card className="h-full bg-card hover-elevate">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg text-primary font-bold">Daily Planner</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
+    <div className="flex flex-col space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg text-primary font-bold">Daily Planner</h3>
+        {size !== "large" && <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">Upcoming</span>}
+      </div>
+      <div className="space-y-2">
         {hours.map((hour) => {
           const key = `${today}-${hour}`;
           const entry = entries[key] || { text: "", done: false };
@@ -38,7 +56,7 @@ export default function DailyPlanner() {
           return (
             <motion.div 
               key={hour}
-              className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
+              className="flex items-center gap-3 p-1 rounded-lg hover:bg-muted/30 transition-colors"
               layout
             >
               <div className="w-12 text-xs font-semibold text-muted-foreground text-right">{displayHour}</div>
@@ -51,14 +69,14 @@ export default function DailyPlanner() {
               <Input
                 value={entry.text}
                 onChange={(e) => updateEntry(hour, "text", e.target.value)}
-                placeholder="What's happening?"
-                className={`border-0 bg-transparent shadow-none focus-visible:ring-1 focus-visible:ring-primary/20 ${entry.done ? 'line-through text-muted-foreground' : ''}`}
+                placeholder={size === "small" ? "..." : "What's happening?"}
+                className={`border-0 bg-transparent shadow-none h-8 px-2 text-sm focus-visible:ring-1 focus-visible:ring-primary/20 ${entry.done ? 'line-through text-muted-foreground' : ''}`}
                 data-testid={`planner-input-${hour}`}
               />
             </motion.div>
           );
         })}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

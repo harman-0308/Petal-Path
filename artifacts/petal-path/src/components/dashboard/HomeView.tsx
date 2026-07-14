@@ -19,11 +19,9 @@ import { LayoutGrid, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 
-import { WIDGET_REGISTRY, DEFAULT_WIDGET_LAYOUT } from "./widgets/registry";
+import { WIDGET_REGISTRY, DEFAULT_WIDGET_LAYOUT, WidgetSize } from "./widgets/registry";
 import { SortableWidget } from "./SortableWidget";
 import WidgetPicker from "./WidgetPicker";
-
-export type WidgetSize = "small" | "medium" | "large";
 
 export default function HomeView() {
   const [activeWidgetIds, setActiveWidgetIds] = useLocalStorage<string[]>("petal-home-layout", DEFAULT_WIDGET_LAYOUT);
@@ -131,7 +129,7 @@ export default function HomeView() {
               variants={containerVariants}
               initial="hidden"
               animate="show"
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-6 auto-rows-[200px]"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-6 auto-rows-auto items-start"
             >
               {validActiveWidgets.map((widget) => (
                 <SortableWidget 

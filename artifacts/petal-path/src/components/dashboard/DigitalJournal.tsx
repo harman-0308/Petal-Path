@@ -53,7 +53,13 @@ const GRATITUDE_PROMPTS = [
 const WEEKLY_PROMPTS = ["Weekly Wins", "Lessons Learned", "Next Week's Goals", "Emotional Check-In", "Something to let go of"];
 const MONTHLY_PROMPTS = ["Biggest Achievement", "What I want more of", "What I want less of", "Word of the month", "Declutter checklist"];
 
-export default function DigitalJournal() {
+import { WidgetSize } from "./widgets/registry";
+
+interface DigitalJournalProps {
+  size?: WidgetSize;
+}
+
+export default function DigitalJournal({ size = "large" }: DigitalJournalProps) {
   const today = format(new Date(), "yyyy-MM-dd");
 
   // Journal State
@@ -157,15 +163,80 @@ export default function DigitalJournal() {
   const [weeklyReset, setWeeklyReset] = useLocalStorage<Record<string, string>>("petal-weekly-reset", {});
   const [monthlyReset, setMonthlyReset] = useLocalStorage<Record<string, string>>("petal-monthly-reset", {});
 
+  if (size === "small") {
+    return (
+      <div className="flex flex-col space-y-4">
+        <div className="flex items-center gap-2">
+          <PenLine className="w-5 h-5 text-secondary" />
+          <h2 className="text-lg font-bold text-secondary font-serif">Journal</h2>
+        </div>
+        {currentEntry ? (
+          <div className="p-3 bg-secondary/10 rounded-xl space-y-2">
+            <div className="flex justify-between items-center text-sm">
+              <span className="font-medium truncate">{localEntryData.title || "Untitled Entry"}</span>
+              <span className="text-xl">{currentEntry.mood}</span>
+            </div>
+            <p className="text-xs text-muted-foreground truncate">{localEntryData.content || "Write something..."}</p>
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">Start journaling today...</p>
+        )}
+      </div>
+    );
+  }
+
+  if (size === "medium") {
+    return (
+      <div className="flex flex-col space-y-4">
+        <div className="flex items-center gap-2">
+          <PenLine className="w-5 h-5 text-secondary" />
+          <h2 className="text-xl font-bold text-secondary font-serif">Digital Journal</h2>
+        </div>
+        {currentEntry && (
+          <div className="flex-1 bg-white/50 rounded-xl p-4 flex flex-col relative overflow-hidden">
+            <div className="flex justify-between items-start mb-4">
+              <div className="text-sm text-muted-foreground font-medium">
+                {format(new Date(currentEntry.date), "EEEE, MMMM do, yyyy")}
+              </div>
+              <div className="flex items-center gap-2">
+                {MOOD_EMOJIS.slice(0, 5).map(emoji => (
+                  <button
+                    key={emoji}
+                    onClick={() => updateEntryMeta({ mood: emoji })}
+                    className={`text-xl hover:scale-110 transition-transform ${currentEntry.mood === emoji ? 'scale-125 drop-shadow-md' : 'opacity-50 hover:opacity-100'}`}
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <Input
+              value={localEntryData.title}
+              onChange={(e) => setLocalEntryData(prev => ({ ...prev, title: e.target.value }))}
+              placeholder="Give this entry a title..."
+              className="text-lg font-bold border-none bg-transparent px-0 shadow-none focus-visible:ring-0 mb-2 h-auto font-serif"
+            />
+            <Textarea
+              value={localEntryData.content}
+              onChange={(e) => setLocalEntryData(prev => ({ ...prev, content: e.target.value }))}
+              placeholder="How are you feeling right now? Let it out..."
+              className="flex-1 resize-none border-none bg-transparent px-0 shadow-none focus-visible:ring-0 text-foreground/80 leading-relaxed text-sm min-h-[150px]"
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-24">
+    <div className="space-y-6">
       {/* TODAY'S HIGHLIGHTS */}
       <section>
         <div className="flex items-center gap-2 mb-4">
           <Sparkles className="w-5 h-5 text-primary" />
-          <h2 className="text-xl font-bold text-primary font-serif">Today's Highlights</h2>
+          <h2 className="text-lg font-bold text-primary font-serif">Today's Highlights</h2>
         </div>
-        <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar snap-x">
+        <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar snap-x">
           {todayHighlights.map((hl, i) => (
             <motion.div
               key={i}

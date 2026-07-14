@@ -1,9 +1,8 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripHorizontal, MoreHorizontal } from "lucide-react";
-import { WidgetDef } from "./widgets/registry";
+import { WidgetDef, WidgetSize } from "./widgets/registry";
 import { memo } from "react";
-import { WidgetSize } from "./HomeView";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,9 +17,9 @@ interface SortableWidgetProps {
 }
 
 const SIZE_CLASSES: Record<WidgetSize, string> = {
-  small: "col-span-1 lg:col-span-2 row-span-1",
-  medium: "col-span-1 md:col-span-2 lg:col-span-4 row-span-2",
-  large: "col-span-1 md:col-span-2 lg:col-span-4 row-span-3",
+  small: "col-span-1 lg:col-span-2",
+  medium: "col-span-1 md:col-span-2 lg:col-span-4",
+  large: "col-span-1 md:col-span-2 lg:col-span-4", // Usually larger widgets will just grow taller natively
 };
 
 function SortableWidgetComponent({ widget, size, onResize }: SortableWidgetProps) {
@@ -40,22 +39,10 @@ function SortableWidgetComponent({ widget, size, onResize }: SortableWidgetProps
     opacity: isDragging ? 0.8 : 1,
   };
 
-  // Determine effective size (default to medium if not set, or parse from defaultSpan)
-  let currentSpan: string = widget.defaultSpan;
+  // Determine effective span (no row-span, let height adapt naturally)
+  let currentSpan: string = widget.defaultSpan.replace(/row-span-\d+/g, "").trim();
   if (size && SIZE_CLASSES[size]) {
     currentSpan = SIZE_CLASSES[size];
-  } else if (!size) {
-    // If no explicit size, try to infer or use default
-    if (currentSpan.includes("row-span")) {
-      // already has row span
-    } else {
-      // provide a default row span based on defaultSpan
-      if (currentSpan.includes("col-span-4") || currentSpan.includes("col-span-8")) {
-        currentSpan += " row-span-2";
-      } else {
-        currentSpan += " row-span-1";
-      }
-    }
   }
 
   return (
@@ -87,7 +74,7 @@ function SortableWidgetComponent({ widget, size, onResize }: SortableWidgetProps
               Small
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onResize("medium")}>
-              <span className={`w-2 h-2 rounded-full mr-2 ${size === "medium" || (!size && currentSpan.includes("col-span-4")) ? "bg-primary" : "bg-transparent border border-muted-foreground"}`} />
+              <span className={`w-2 h-2 rounded-full mr-2 ${size === "medium" || !size ? "bg-primary" : "bg-transparent border border-muted-foreground"}`} />
               Medium
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onResize("large")}>
@@ -98,13 +85,10 @@ function SortableWidgetComponent({ widget, size, onResize }: SortableWidgetProps
         </DropdownMenu>
       </div>
       
-      {/* Widget Container - Bounded Box */}
-      <div className={`h-full flex flex-col overflow-hidden bg-card ${isDragging ? 'shadow-2xl scale-[1.02] border-primary/50' : ''} transition-all duration-200 rounded-xl`}>
-        {/* Inner Content - Scrollable */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-none">
-          {/* We wrap the component in a div that passes height down if needed, but since most widgets are Cards, we can just render it. The Card might have its own padding. */}
-          {widget.component}
-        </div>
+      {/* Widget Container - Adaptive Box */}
+      <div className={`bg-card rounded-2xl shadow-sm border border-border/50 p-4 hover:shadow-md ${isDragging ? 'shadow-2xl scale-[1.02] border-primary/50' : ''} transition-all duration-200`}>
+        {/* Render the widget component, passing down the size */}
+        {widget.component(size || "medium")}
       </div>
     </div>
   );

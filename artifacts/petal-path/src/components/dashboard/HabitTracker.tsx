@@ -2,17 +2,21 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { useLocalStorage } from "@/hooks/use-local-storage";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Plus, Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { WidgetSize } from "./widgets/registry";
 
 type Habit = { id: string, name: string, streak: number, totalDays: number };
 
-export default function HabitTracker() {
+interface HabitTrackerProps {
+  size?: WidgetSize;
+}
+
+export default function HabitTracker({ size = "medium" }: HabitTrackerProps) {
   const [habits, setHabits] = useLocalStorage<Habit[]>("petal-habits", []);
   const [dailyLogs, setDailyLogs] = useLocalStorage<Record<string, string[]>>("petal-habit-logs", {});
   
@@ -65,10 +69,66 @@ export default function HabitTracker() {
     }));
   };
 
+  if (size === "small") {
+    const displayHabits = habits.slice(0, 4);
+    const remaining = habits.length - displayHabits.length;
+
+    return (
+      <div className="flex flex-col space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="font-bold text-primary">Habits</h3>
+        </div>
+        <div className="space-y-3">
+          {displayHabits.length === 0 ? (
+            <div className="text-center py-2 text-muted-foreground text-sm">
+              No habits 🌱
+            </div>
+          ) : (
+            displayHabits.map(habit => {
+              const isDone = todayLogs.includes(habit.id);
+              return (
+                <div key={habit.id} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <motion.button
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => toggleHabit(habit.id)}
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                        isDone ? "bg-primary border-primary" : "border-primary/30 bg-transparent"
+                      }`}
+                    >
+                      {isDone && (
+                        <motion.div 
+                          initial={{ scale: 0 }} 
+                          animate={{ scale: 1 }} 
+                          className="w-2 h-2 rounded-full bg-white"
+                        />
+                      )}
+                    </motion.button>
+                    <span className={`text-sm font-medium transition-colors truncate max-w-[100px] ${isDone ? "text-primary" : "text-foreground"}`}>
+                      {habit.name}
+                    </span>
+                  </div>
+                  <div className="text-xs font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full">
+                    {habit.streak} 🔥
+                  </div>
+                </div>
+              );
+            })
+          )}
+          {remaining > 0 && (
+            <div className="text-xs text-muted-foreground flex justify-end">
+              + {remaining} more
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <Card className="h-full bg-card hover-elevate">
-      <CardHeader className="pb-3 flex flex-row items-center justify-between">
-        <CardTitle className="text-lg text-primary font-bold">Habits</CardTitle>
+    <div className="flex flex-col space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg text-primary font-bold">Habits</h3>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" data-testid="button-add-habit-modal">
@@ -99,8 +159,9 @@ export default function HabitTracker() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </CardHeader>
-      <CardContent className="space-y-4">
+      </div>
+      
+      <div className="space-y-4">
         {habits.length === 0 ? (
           <div className="text-center py-6 text-muted-foreground text-sm">
             Plant a new habit seed to start growing! 🌱
@@ -155,7 +216,7 @@ export default function HabitTracker() {
             );
           })
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
