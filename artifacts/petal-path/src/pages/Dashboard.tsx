@@ -1,28 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
-import DailyPlanner from "../components/dashboard/DailyPlanner";
-import TodoList from "../components/dashboard/TodoList";
-import HabitTracker from "../components/dashboard/HabitTracker";
-import WaterTracker from "../components/dashboard/WaterTracker";
-import SleepTracker from "../components/dashboard/SleepTracker";
-import ExerciseTracker from "../components/dashboard/ExerciseTracker";
-import MealTracker from "../components/dashboard/MealTracker";
-import Affirmations from "../components/dashboard/Affirmations";
-import Notes from "../components/dashboard/Notes";
-import WeeklyView from "../components/dashboard/WeeklyView";
-import MonthlyView from "../components/dashboard/MonthlyView";
+import { useLocation } from "wouter";
+import HomeView from "../components/dashboard/HomeView";
 import WellnessView from "../components/dashboard/WellnessView";
 import FocusView from "../components/dashboard/FocusView";
-import JournalView from "../components/dashboard/JournalView";
-import MoodTracker from "../components/dashboard/MoodTracker";
-import EnergyTracker from "../components/dashboard/EnergyTracker";
-import SelfCareChecklist from "../components/dashboard/SelfCareChecklist";
-import LittleThings from "../components/dashboard/LittleThings";
+import GoalsView from "../components/dashboard/GoalsView";
 import WeatherWidget from "../components/dashboard/WeatherWidget";
-import GratitudeMini from "../components/dashboard/GratitudeMini";
-import LofiPlayer from "../components/dashboard/LofiPlayer";
 import ThemePanel from "../components/dashboard/ThemePanel";
+import LofiPlayer from "../components/dashboard/LofiPlayer";
 import GamificationBar from "../components/dashboard/GamificationBar";
 import FinanceView from "../components/dashboard/FinanceView";
 import ProfileView from "../components/dashboard/ProfileView";
@@ -55,18 +41,21 @@ import {
 } from "lucide-react";
 
 const TABS = [
-  { id: "daily", label: "Daily", icon: Sun },
-  { id: "weekly", label: "Weekly", icon: CalendarRange },
-  { id: "monthly", label: "Monthly", icon: CalendarDays },
+  { id: "home", label: "Home", icon: Sun },
+  { id: "goals", label: "Goals", icon: PenLine },
   { id: "wellness", label: "Wellness", icon: Heart },
   { id: "focus", label: "Focus", icon: BrainCircuit },
-  { id: "journal", label: "Journal", icon: PenLine },
   { id: "finance", label: "Finance", icon: Wallet },
 ];
 
 export default function Dashboard() {
   const { settings } = useSettings();
-  const [activeTab, setActiveTab] = useState(settings.startupView || "daily");
+  const [location, setLocation] = useLocation();
+  const activeTab = location === "/" ? "home" : location.replace("/", "");
+  const setActiveTab = (tab: string) => {
+    setLocation(tab === "home" ? "/" : `/${tab}`);
+  };
+
   const [time, setTime] = useState(new Date());
   const [user, setUser] = useLocalStorage<UserProfile | null>("petal-user", null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -135,11 +124,10 @@ export default function Dashboard() {
     return <Login onLoginSuccess={handleLoginSuccess} />;
   }
 
-  // Show Onboarding screen if profile is not complete and user hasn't skipped
   if (!profile.isComplete && !hasSkippedOnboarding) {
     return (
       <OnboardingView 
-        onComplete={() => setActiveTab("daily")} 
+        onComplete={() => setActiveTab("home")} 
         onSkip={() => setHasSkippedOnboarding(true)} 
       />
     );
@@ -191,76 +179,9 @@ export default function Dashboard() {
 
         {/* Content Area */}
         <AnimatePresence mode="wait">
-          {activeTab === "daily" && (
-            <motion.div 
-              key="daily"
-              variants={containerVariants}
-              initial="hidden"
-              animate="show"
-              exit="exit"
-              className="grid grid-cols-1 lg:grid-cols-12 gap-6"
-            >
-              {/* Left Column (Wider) */}
-              <div className="lg:col-span-8 space-y-6">
-                <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <TodoList />
-                  <HabitTracker />
-                </motion.div>
-                
-                <motion.div variants={itemVariants}>
-                  <DailyPlanner />
-                </motion.div>
-                
-                <motion.div variants={itemVariants}>
-                  <Notes />
-                </motion.div>
-              </div>
-
-              {/* Right Column (Narrower) */}
-              <div className="lg:col-span-4 space-y-6">
-                <motion.div variants={itemVariants}>
-                  <MoodTracker />
-                </motion.div>
-                <motion.div variants={itemVariants}>
-                  <EnergyTracker />
-                </motion.div>
-                <motion.div variants={itemVariants}>
-                  <SelfCareChecklist />
-                </motion.div>
-                <motion.div variants={itemVariants}>
-                  <LittleThings />
-                </motion.div>
-                <motion.div variants={itemVariants}>
-                  <GratitudeMini />
-                </motion.div>
-                <motion.div variants={itemVariants}>
-                  <Affirmations />
-                </motion.div>
-                <motion.div variants={itemVariants}>
-                  <WaterTracker />
-                </motion.div>
-                <motion.div variants={itemVariants}>
-                  <SleepTracker />
-                </motion.div>
-                <motion.div variants={itemVariants}>
-                  <ExerciseTracker />
-                </motion.div>
-                <motion.div variants={itemVariants}>
-                  <MealTracker />
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
-
-          {activeTab === "weekly" && (
-            <motion.div key="weekly" variants={containerVariants} initial="hidden" animate="show" exit="exit">
-              <WeeklyView />
-            </motion.div>
-          )}
-
-          {activeTab === "monthly" && (
-            <motion.div key="monthly" variants={containerVariants} initial="hidden" animate="show" exit="exit">
-              <MonthlyView />
+          {activeTab === "home" && (
+            <motion.div key="home" variants={containerVariants} initial="hidden" animate="show" exit="exit">
+              <HomeView />
             </motion.div>
           )}
 
@@ -276,9 +197,9 @@ export default function Dashboard() {
             </motion.div>
           )}
 
-          {activeTab === "journal" && (
-            <motion.div key="journal" variants={containerVariants} initial="hidden" animate="show" exit="exit">
-              <JournalView />
+          {activeTab === "goals" && (
+            <motion.div key="goals" variants={containerVariants} initial="hidden" animate="show" exit="exit">
+              <GoalsView />
             </motion.div>
           )}
 
