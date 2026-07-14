@@ -45,50 +45,60 @@ function SortableWidgetComponent({ widget, size, onResize }: SortableWidgetProps
     currentSpan = SIZE_CLASSES[size];
   }
 
+  const supportedSizes = widget.supportedSizes || ["small", "medium", "large"];
+
   return (
     <div
       ref={setNodeRef}
       style={style}
       className={`group relative w-full ${currentSpan}`}
     >
-      {/* Top Right: Drag Handle */}
+      {/* Top Left: Drag Handle (Moved to left to prevent overlapping right-side action buttons) */}
       <div 
         {...attributes}
         {...listeners}
-        className="absolute top-2 right-2 z-10 p-2 rounded-md bg-background/50 backdrop-blur-sm border border-border/50 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing hover:bg-background shadow-sm hover:text-foreground"
+        className="absolute top-2 left-2 z-10 p-2 rounded-md bg-background/50 backdrop-blur-sm border border-border/50 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing hover:bg-background shadow-sm hover:text-foreground"
       >
         <GripHorizontal className="w-4 h-4" />
       </div>
 
       {/* Bottom Right: Resize Controls */}
-      <div className="absolute bottom-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="p-1.5 rounded-md bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:bg-background shadow-sm hover:text-foreground">
-              <MoreHorizontal className="w-4 h-4" />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-32">
-            <DropdownMenuItem onClick={() => onResize("small")}>
-              <span className={`w-2 h-2 rounded-full mr-2 ${size === "small" ? "bg-primary" : "bg-transparent border border-muted-foreground"}`} />
-              Small
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onResize("medium")}>
-              <span className={`w-2 h-2 rounded-full mr-2 ${size === "medium" || !size ? "bg-primary" : "bg-transparent border border-muted-foreground"}`} />
-              Medium
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onResize("large")}>
-              <span className={`w-2 h-2 rounded-full mr-2 ${size === "large" ? "bg-primary" : "bg-transparent border border-muted-foreground"}`} />
-              Large
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      {supportedSizes.length > 1 && (
+        <div className="absolute bottom-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="p-1.5 rounded-md bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:bg-background shadow-sm hover:text-foreground">
+                <MoreHorizontal className="w-4 h-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-32">
+              {supportedSizes.includes("small") && (
+                <DropdownMenuItem onClick={() => onResize("small")}>
+                  <span className={`w-2 h-2 rounded-full mr-2 ${size === "small" ? "bg-primary" : "bg-transparent border border-muted-foreground"}`} />
+                  Small
+                </DropdownMenuItem>
+              )}
+              {supportedSizes.includes("medium") && (
+                <DropdownMenuItem onClick={() => onResize("medium")}>
+                  <span className={`w-2 h-2 rounded-full mr-2 ${size === "medium" || (!size && supportedSizes.includes("medium")) ? "bg-primary" : "bg-transparent border border-muted-foreground"}`} />
+                  Medium
+                </DropdownMenuItem>
+              )}
+              {supportedSizes.includes("large") && (
+                <DropdownMenuItem onClick={() => onResize("large")}>
+                  <span className={`w-2 h-2 rounded-full mr-2 ${size === "large" ? "bg-primary" : "bg-transparent border border-muted-foreground"}`} />
+                  Large
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
       
       {/* Widget Container - Adaptive Box */}
-      <div className={`bg-card rounded-2xl shadow-sm border border-border/50 p-4 hover:shadow-md ${isDragging ? 'shadow-2xl scale-[1.02] border-primary/50' : ''} transition-all duration-200`}>
+      <div className={`bg-card rounded-3xl shadow-sm border border-border/50 p-5 hover:shadow-md ${isDragging ? 'shadow-2xl scale-[1.02] border-primary/50' : ''} transition-all duration-200`}>
         {/* Render the widget component, passing down the size */}
-        {widget.component(size || "medium")}
+        {widget.component(size || (supportedSizes.includes("medium") ? "medium" : supportedSizes[0]))}
       </div>
     </div>
   );
