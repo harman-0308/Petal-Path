@@ -53,13 +53,13 @@ const GRATITUDE_PROMPTS = [
 const WEEKLY_PROMPTS = ["Weekly Wins", "Lessons Learned", "Next Week's Goals", "Emotional Check-In", "Something to let go of"];
 const MONTHLY_PROMPTS = ["Biggest Achievement", "What I want more of", "What I want less of", "Word of the month", "Declutter checklist"];
 
-import { WidgetSize } from "./widgets/registry";
+import { WidgetSize, DEFAULT_WIDGET_SIZE } from "./widgets/registry";
 
 interface DigitalJournalProps {
   size?: WidgetSize;
 }
 
-export default function DigitalJournal({ size = "large" }: DigitalJournalProps) {
+export default function DigitalJournal({ size = DEFAULT_WIDGET_SIZE }: DigitalJournalProps) {
   const today = format(new Date(), "yyyy-MM-dd");
 
   // Journal State

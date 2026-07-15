@@ -2,7 +2,7 @@ import { useState, useRef, memo } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripHorizontal } from "lucide-react";
-import { WidgetDef, WidgetSize } from "./widgets/registry";
+import { WidgetDef, WidgetSize, DEFAULT_WIDGET_SIZE } from "./widgets/registry";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,13 +42,19 @@ function SortableWidgetComponent({ widget, size, onResize }: SortableWidgetProps
     opacity: isDragging ? 0.8 : 1,
   };
 
+  const supportedSizes = widget.supportedSizes || ["small", "medium", "large"];
+  
+  // Resolve default size to the global default if supported, otherwise fallback to first supported
+  const defaultSize = supportedSizes.includes(DEFAULT_WIDGET_SIZE)
+    ? DEFAULT_WIDGET_SIZE
+    : supportedSizes[0];
+  const effectiveSize = size || defaultSize;
+
   // Determine effective span (no row-span, let height adapt naturally)
   let currentSpan: string = widget.defaultSpan.replace(/row-span-\d+/g, "").trim();
-  if (size && SIZE_CLASSES[size]) {
-    currentSpan = SIZE_CLASSES[size];
+  if (effectiveSize && SIZE_CLASSES[effectiveSize]) {
+    currentSpan = SIZE_CLASSES[effectiveSize];
   }
-
-  const supportedSizes = widget.supportedSizes || ["small", "medium", "large"];
 
   return (
     <div
@@ -96,19 +102,19 @@ function SortableWidgetComponent({ widget, size, onResize }: SortableWidgetProps
             <DropdownMenuContent align="end" className="w-32">
               {supportedSizes.includes("small") && (
                 <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onResize("small"); }}>
-                  <span className={`w-2 h-2 rounded-full mr-2 ${size === "small" ? "bg-primary" : "bg-transparent border border-muted-foreground"}`} />
+                  <span className={`w-2 h-2 rounded-full mr-2 ${effectiveSize === "small" ? "bg-primary" : "bg-transparent border border-muted-foreground"}`} />
                   Small
                 </DropdownMenuItem>
               )}
               {supportedSizes.includes("medium") && (
                 <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onResize("medium"); }}>
-                  <span className={`w-2 h-2 rounded-full mr-2 ${size === "medium" || (!size && supportedSizes.includes("medium")) ? "bg-primary" : "bg-transparent border border-muted-foreground"}`} />
+                  <span className={`w-2 h-2 rounded-full mr-2 ${effectiveSize === "medium" ? "bg-primary" : "bg-transparent border border-muted-foreground"}`} />
                   Medium
                 </DropdownMenuItem>
               )}
               {supportedSizes.includes("large") && (
                 <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onResize("large"); }}>
-                  <span className={`w-2 h-2 rounded-full mr-2 ${size === "large" ? "bg-primary" : "bg-transparent border border-muted-foreground"}`} />
+                  <span className={`w-2 h-2 rounded-full mr-2 ${effectiveSize === "large" ? "bg-primary" : "bg-transparent border border-muted-foreground"}`} />
                   Large
                 </DropdownMenuItem>
               )}
@@ -120,7 +126,7 @@ function SortableWidgetComponent({ widget, size, onResize }: SortableWidgetProps
       {/* Widget Container - Adaptive Box */}
       <div className={`bg-card rounded-3xl shadow-sm border border-border/50 p-5 hover:shadow-md ${isDragging ? 'shadow-2xl scale-[1.02] border-primary/50' : ''} transition-all duration-200`}>
         {/* Render the widget component, passing down the size */}
-        {widget.component(size || (supportedSizes.includes("medium") ? "medium" : supportedSizes[0]))}
+        {widget.component(effectiveSize)}
       </div>
     </div>
   );

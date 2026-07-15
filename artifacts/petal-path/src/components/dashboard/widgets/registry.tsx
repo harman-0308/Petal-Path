@@ -58,6 +58,8 @@ import {
 
 export type WidgetSize = "small" | "medium" | "large";
 
+export const DEFAULT_WIDGET_SIZE: WidgetSize = "small";
+
 export type WidgetDef = {
   id: string;
   title: string;

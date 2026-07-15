@@ -4,7 +4,7 @@ import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { WidgetSize } from "./widgets/registry";
+import { WidgetSize, DEFAULT_WIDGET_SIZE } from "./widgets/registry";
 
 const MOODS = [
   { emoji: "😊", label: "Happy" },
@@ -24,7 +24,7 @@ interface MoodTrackerProps {
   size?: WidgetSize;
 }
 
-export default function MoodTracker({ size = "medium" }: MoodTrackerProps) {
+export default function MoodTracker({ size = DEFAULT_WIDGET_SIZE }: MoodTrackerProps) {
   const today = format(new Date(), "yyyy-MM-dd");
   const [logs, setLogs] = useLocalStorage<Record<string, MoodLog>>("petal-mood", {});
   const currentLog = logs[today];

@@ -8,7 +8,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { WidgetSize } from "./widgets/registry";
+import { WidgetSize, DEFAULT_WIDGET_SIZE } from "./widgets/registry";
 
 type Habit = { id: string, name: string, streak: number, totalDays: number };
 
@@ -16,7 +16,7 @@ interface HabitTrackerProps {
   size?: WidgetSize;
 }
 
-export default function HabitTracker({ size = "medium" }: HabitTrackerProps) {
+export default function HabitTracker({ size = DEFAULT_WIDGET_SIZE }: HabitTrackerProps) {
   const [habits, setHabits] = useLocalStorage<Habit[]>("petal-habits", []);
   const [dailyLogs, setDailyLogs] = useLocalStorage<Record<string, string[]>>("petal-habit-logs", {});
   
