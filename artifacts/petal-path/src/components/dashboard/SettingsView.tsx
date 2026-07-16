@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSettings } from "@/hooks/use-settings";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import { toast } from "sonner";
 import { 
   Settings, 
@@ -17,8 +18,26 @@ import {
   Trash2, 
   Volume2, 
   EyeOff,
-  User
+  User,
+  Check
 } from "lucide-react";
+
+const COLORS = [
+  { id: "rose",     hex: "#eb3b76", label: "Rose" },
+  { id: "lavender", hex: "#a25df2", label: "Lavender" },
+  { id: "mint",     hex: "#1fb87a", label: "Mint" },
+  { id: "peach",    hex: "#f2642e", label: "Peach" },
+  { id: "sky",      hex: "#14aaf2", label: "Sky" },
+  { id: "gold",     hex: "#d99507", label: "Gold" },
+];
+
+const FONTS = [
+  { id: "inter",     label: "Inter",     value: "'Inter', sans-serif" },
+  { id: "nunito",    label: "Nunito",    value: "'Nunito', sans-serif" },
+  { id: "outfit",    label: "Outfit",    value: "'Outfit', sans-serif" },
+  { id: "quicksand", label: "Quicksand", value: "'Quicksand', sans-serif" },
+  { id: "comfortaa", label: "Comfortaa", value: "'Comfortaa', sans-serif" },
+];
 
 interface SettingsViewProps {
   open: boolean;
@@ -28,6 +47,8 @@ interface SettingsViewProps {
 
 export default function SettingsView({ open, onOpenChange, onNavigateToProfile }: SettingsViewProps) {
   const { settings, updateSetting } = useSettings();
+  const [accent, setAccent] = useLocalStorage("petal-theme-accent", "rose");
+  const [font, setFont] = useLocalStorage("petal-theme-font", "nunito");
   const [activeTab, setActiveTab] = useState<"personalization" | "notifications" | "privacy" | "data">("personalization");
   const [deleteConfirm, setDeleteConfirm] = useState("");
 
@@ -153,6 +174,54 @@ export default function SettingsView({ open, onOpenChange, onNavigateToProfile }
               </div>
 
               <div className="space-y-6">
+
+                {/* Accent Color */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-bold text-foreground">Accent Color</Label>
+                  <div className="flex gap-3 flex-wrap">
+                    {COLORS.map(c => (
+                      <button
+                        key={c.id}
+                        onClick={() => setAccent(c.id)}
+                        title={c.label}
+                        className={`relative w-8 h-8 rounded-full transition-all press-scale ${
+                          accent === c.id
+                            ? 'scale-110 ring-2 ring-offset-2 ring-primary'
+                            : 'hover:scale-105 ring-1 ring-border/30'
+                        }`}
+                        style={{ backgroundColor: c.hex }}
+                      >
+                        {accent === c.id && (
+                          <Check className="absolute inset-0 m-auto w-4 h-4 text-white drop-shadow" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Typography */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-bold text-foreground">Typography</Label>
+                  <div className="flex flex-col gap-2">
+                    {FONTS.map(f => (
+                      <button
+                        key={f.id}
+                        onClick={() => setFont(f.id)}
+                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl border transition-all text-left press-scale ${
+                          font === f.id
+                            ? 'bg-primary/10 border-primary text-primary font-bold'
+                            : 'bg-card/50 border-border/30 text-foreground hover:bg-muted hover:border-border/60'
+                        }`}
+                        style={{ fontFamily: f.value }}
+                      >
+                        <span className="text-sm font-bold">{f.label}</span>
+                        <span className="text-xs opacity-70 tracking-wide">Aa Bb 123</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="h-px bg-border/30" />
 
                 <div className="space-y-3">
                   <Label className="text-sm font-bold text-foreground">Time Format</Label>

@@ -193,7 +193,7 @@ export default function DigitalJournal({ size = DEFAULT_WIDGET_SIZE }: DigitalJo
           <h2 className="text-xl font-bold text-secondary font-serif">Digital Journal</h2>
         </div>
         {currentEntry && (
-          <div className="flex-1 bg-white/50 rounded-xl p-4 flex flex-col relative overflow-hidden">
+          <div className="flex-1 bg-white/50 dark:bg-muted/20 rounded-xl p-4 flex flex-col relative overflow-hidden">
             <div className="flex justify-between items-start mb-4">
               <div className="text-sm text-muted-foreground font-medium">
                 {format(new Date(currentEntry.date), "EEEE, MMMM do, yyyy")}
@@ -248,7 +248,7 @@ export default function DigitalJournal({ size = DEFAULT_WIDGET_SIZE }: DigitalJo
                 value={hl.answer}
                 onChange={(e) => updateHighlight(i, e.target.value)}
                 placeholder="Write here..."
-                className="bg-white/50 border-0 focus-visible:ring-1 focus-visible:ring-primary/50 resize-none min-h-[80px] text-sm"
+                className="bg-white/50 dark:bg-muted/30 border-0 focus-visible:ring-1 focus-visible:ring-primary/50 resize-none min-h-[80px] text-sm"
               />
             </motion.div>
           ))}
@@ -266,7 +266,7 @@ export default function DigitalJournal({ size = DEFAULT_WIDGET_SIZE }: DigitalJo
             
             <div className="flex gap-4 h-[500px]">
               {/* Journal History Sidebar */}
-              <Card className="w-64 flex-shrink-0 bg-white/50 border-none shadow-sm hidden md:flex flex-col">
+              <Card className="w-64 flex-shrink-0 bg-white/50 dark:bg-card/80 border-none shadow-sm hidden md:flex flex-col">
                 <CardHeader className="py-4 px-4 bg-primary/5 border-b border-border/50">
                   <CardTitle className="text-sm font-bold text-primary">Entries</CardTitle>
                 </CardHeader>
@@ -293,7 +293,7 @@ export default function DigitalJournal({ size = DEFAULT_WIDGET_SIZE }: DigitalJo
 
               {/* Journal Editor */}
               {currentEntry && (
-                <Card className="flex-1 bg-white/80 border-none shadow-sm flex flex-col relative overflow-hidden">
+                <Card className="flex-1 bg-white/80 dark:bg-card/90 border-none shadow-sm flex flex-col relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-40 h-40 bg-secondary/10 rounded-full blur-3xl pointer-events-none" />
                   
                   <CardContent className="p-6 flex-1 flex flex-col relative z-10">
@@ -389,7 +389,7 @@ export default function DigitalJournal({ size = DEFAULT_WIDGET_SIZE }: DigitalJo
                       <Input 
                         name="gratitude" 
                         placeholder="I am grateful for..." 
-                        className="bg-white/50 border-primary/20 focus-visible:ring-primary/50 text-sm"
+                        className="bg-white/50 dark:bg-muted/30 border-primary/20 focus-visible:ring-primary/50 text-sm"
                         autoComplete="off"
                       />
                       <Button type="submit" size="sm" className="bg-primary hover:bg-primary/90 text-white shrink-0">
@@ -411,7 +411,7 @@ export default function DigitalJournal({ size = DEFAULT_WIDGET_SIZE }: DigitalJo
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="p-3 bg-white/80 rounded-lg border border-primary/10 shadow-sm flex justify-between items-center group/item relative overflow-hidden hover:shadow-md hover:border-primary/30 transition-all"
+                        className="p-3 bg-white/80 dark:bg-muted/30 rounded-lg border border-primary/10 shadow-sm flex justify-between items-center group/item relative overflow-hidden hover:shadow-md hover:border-primary/30 transition-all"
                       >
                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/50 group-hover/item:bg-primary transition-colors" />
                         <span className="text-sm text-foreground/80 pl-2">{item.text}</span>
@@ -437,7 +437,7 @@ export default function DigitalJournal({ size = DEFAULT_WIDGET_SIZE }: DigitalJo
             </div>
             
             <Accordion type="single" collapsible className="w-full space-y-2">
-              <AccordionItem value="weekly" className="bg-white/50 rounded-xl border-none shadow-sm px-4">
+              <AccordionItem value="weekly" className="bg-white/50 dark:bg-muted/20 rounded-xl border-none shadow-sm px-4">
                 <AccordionTrigger className="hover:no-underline text-secondary font-bold text-sm">
                   Weekly Reset
                 </AccordionTrigger>
@@ -448,14 +448,14 @@ export default function DigitalJournal({ size = DEFAULT_WIDGET_SIZE }: DigitalJo
                       <Textarea 
                         value={weeklyReset[prompt] || ''}
                         onChange={(e) => setWeeklyReset({ ...weeklyReset, [prompt]: e.target.value })}
-                        className="min-h-[60px] resize-none bg-white/80 text-sm border-secondary/20 focus-visible:ring-secondary/50" 
+                        className="min-h-[60px] resize-none bg-white/80 dark:bg-muted/30 text-sm border-secondary/20 focus-visible:ring-secondary/50" 
                       />
                     </div>
                   ))}
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="monthly" className="bg-white/50 rounded-xl border-none shadow-sm px-4">
+              <AccordionItem value="monthly" className="bg-white/50 dark:bg-muted/20 rounded-xl border-none shadow-sm px-4">
                 <AccordionTrigger className="hover:no-underline text-accent font-bold text-sm">
                   Monthly Reflection
                 </AccordionTrigger>
@@ -466,7 +466,7 @@ export default function DigitalJournal({ size = DEFAULT_WIDGET_SIZE }: DigitalJo
                       <Textarea 
                         value={monthlyReset[prompt] || ''}
                         onChange={(e) => setMonthlyReset({ ...monthlyReset, [prompt]: e.target.value })}
-                        className="min-h-[60px] resize-none bg-white/80 text-sm border-accent/20 focus-visible:ring-accent/50" 
+                        className="min-h-[60px] resize-none bg-white/80 dark:bg-muted/30 text-sm border-accent/20 focus-visible:ring-accent/50" 
                       />
                     </div>
                   ))}
