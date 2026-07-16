@@ -7,7 +7,7 @@ import WellnessView from "../components/dashboard/WellnessView";
 import FocusView from "../components/dashboard/FocusView";
 import GoalsView from "../components/dashboard/GoalsView";
 import WeatherWidget from "../components/dashboard/WeatherWidget";
-import ThemePanel from "../components/dashboard/ThemePanel";
+import ThemeToggle from "../components/dashboard/ThemeToggle";
 import LofiPlayer from "../components/dashboard/LofiPlayer";
 import GamificationBar from "../components/dashboard/GamificationBar";
 import FinanceView from "../components/dashboard/FinanceView";
@@ -240,7 +240,7 @@ export default function Dashboard() {
           );
         })}
         <div className="h-5 w-px bg-border/60 mx-1 shrink-0" />
-        <ThemePanel />
+        <ThemeToggle />
         <div className="h-5 w-px bg-border/60 mx-1 shrink-0" />
         <LofiPlayer />
         <div className="h-5 w-px bg-border/60 mx-1 shrink-0" />
